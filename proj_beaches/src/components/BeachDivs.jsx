@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import beachData from './locations.json';
 
-const BeachDivs = () => {
+const BeachDivs = ({ filter }) => {
   
   const [beaches, setBeaches] = useState([]);
+  
   useEffect(() => {
   const allBeaches = [];
   Object.keys(beachData).forEach(state => {
@@ -14,12 +15,17 @@ const BeachDivs = () => {
   });
   setBeaches(allBeaches);
   }, []);
-    
+  
+  const filteredBeaches = beaches.filter(beach =>
+    beach.name.toLowerCase().includes(filter.toLowerCase()) ||
+    beach.location.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <>
-      <div className="flex-1 overflow-y-auto mt-[200px]">
+      <div className="flex-1 overflow-y-auto mt-[200px] mb-20">
         <ul className="flex flex-wrap justify-center gap-4 p-4">
-          {beaches.map((beach, index) => (
+          {filteredBeaches.map((beach, index) => (
             <li key={index} className="md: min-w-full bg-white border border-black rounded-xl flex flex-col justify-between p-4">
               <div className="min-h-40 bg-white border border-black rounded-xl flex items-center justify-center">
                 Beach photo
