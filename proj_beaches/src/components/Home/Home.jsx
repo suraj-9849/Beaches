@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import Searchbar from '../Search/Searchbar'
-import BeachDivs from '../BeachDivs'
 import Footer from '../Footer'
 import Navbar from '../Navbar'
 
