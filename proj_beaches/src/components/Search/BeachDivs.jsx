@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import beachData from './locations.json';
+import beachData from '../locations.json';
 import { Bookmark } from 'lucide-react';
 
 const BeachDivs = ({ filter }) => {

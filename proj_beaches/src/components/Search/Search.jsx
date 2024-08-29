@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import Searchbar from '../Searchbar'
-import BeachDivs from '../BeachDivs'
+import Searchbar from './Searchbar'
 import Footer from '../Footer'
 import Navbar from '../Navbar'
+import BeachDivs from './BeachDivs';
 
 function Search() {
       const [input, setInput] = useState("");
