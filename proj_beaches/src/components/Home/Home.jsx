@@ -1,17 +1,29 @@
-import React from 'react'
-import Footer from '../Footer'
-import Navbar from '../Navbar'
+import React from "react";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
+import Hero from "./Hero";
+import DescriptionDivs from "./DescriptionDivs";
 
-function Home() {
+const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col w-full ">
+    <div className="h-[250vh] flex flex-col ">
       <Navbar />
-      <main className="flex-grow flex flex-col mt-10 ">
-       <h1 className='mt-10 text-6xl font-bold ' > I am Home Page</h1>
-      </main>
+      <Hero />
+      <hr />
+      <DescriptionDivs
+        data={"Events"}
+      />
+      <hr />
+      <DescriptionDivs
+        data={"Search"}
+      />
+      <hr />
+      <DescriptionDivs
+        data={"MapView"}
+      />
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
