@@ -6,18 +6,15 @@ import DescriptionDivs from "./DescriptionDivs";
 
 const Home = () => {
   return (
-    <div className="h-[250vh] flex flex-col ">
+    <div className="h-[200vh] flex flex-col ">
       <Navbar />
       <Hero />
-      <hr />
       <DescriptionDivs
         data={"Events"}
       />
-      <hr />
       <DescriptionDivs
         data={"Search"}
       />
-      <hr />
       <DescriptionDivs
         data={"MapView"}
       />

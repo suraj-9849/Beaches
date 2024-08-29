@@ -2,8 +2,8 @@ import React from "react";
 import { Umbrella, Search } from "lucide-react";
 function Hero() {
   return (
-    <main className="pt-60 pb-20 flex flex-col transition-colors bg-gradient-to-br from-sky-400 via-cyan-300 to-blue-500 duration-1000 relative overflow-hidden">
-      <div className="text-center z-10 mb-8 animate-fadeIn">
+    <main className="pt-60 pb-20  transition-colors bg-gradient-to-br from-sky-400 via-cyan-300 to-blue-500 duration-1000 relative overflow-hidden">
+      <div className="text-center flex flex-col items-center justify-center  z-10 mb-8 animate-fadeIn">
         <h2 className="text-5xl md:text-7xl font-extrabold text-white mb-4 drop-shadow-lg tracking-wide">
           Beaches App
         </h2>
