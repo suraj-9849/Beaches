@@ -1,19 +1,27 @@
-import React, { useState } from 'react'
-import Footer from '../Footer'
-import Navbar from '../Navbar'
 
-function Home() {
-  const [input, setInput] = useState("");
+import React from "react";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
+import Hero from "./Hero";
+import DescriptionDivs from "./DescriptionDivs";
 
+const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col w-full ">
+    <div className="h-[200vh] flex flex-col ">
       <Navbar />
-      <main className="flex-grow flex flex-col mt-10 ">
-  <h1 className='mt-10 text-6xl font-bold ' > I am Home Page</h1>
-      </main>
+      <Hero />
+      <DescriptionDivs
+        data={"Events"}
+      />
+      <DescriptionDivs
+        data={"Search"}
+      />
+      <DescriptionDivs
+        data={"MapView"}
+      />
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
