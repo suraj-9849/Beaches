@@ -102,21 +102,21 @@ const CarouselWithDetails = ({ name, beachLocation }) => {
     };
 
     return (
-        <div className="w-full mx-auto p-4 md:p-8 bg-gradient-to-br from-blue-400 via-teal-300 to-green-300 rounded-3xl shadow-2xl">
+        <div className="w-full mx-auto p-4 md:p-8 rounded-3xl shadow-2xl">
             <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden rounded-3xl shadow-2xl mb-6 md:mb-12">
                 <Slider {...settings}>
                     {carouselImages.map((image, index) => (
                         <div key={index} className="carousel-item relative">
                             <img src={image} alt={`Slide ${index}`} className="w-full h-[300px] md:h-[500px] object-cover" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                            <div className="absolute inset-0  via-transparent to-transparent"></div>
                         </div>
                     ))}
                 </Slider>
                 <div className="absolute bottom-4 md:bottom-8 left-4 md:left-8 right-4 md:right-8 text-white z-10">
-                    <h1 className="text-3xl md:text-5xl font-extrabold mb-1 md:mb-2 tracking-wide text-shadow">{name}</h1>
+                    <h1 className="text-3xl md:text-5xl font-extrabold mb-1 md:mb-2 text-black tracking-wide text-shadow">{name}</h1>
                     <div className="flex items-center space-x-2 text-sm md:text-xl">
                         <MapPin className="text-red-400" size={16} />
-                        <h2 className="font-semibold text-shadow">{beachLocation}</h2>
+                        <h2 className="font-semibold text-black text-shadow">{beachLocation}</h2>
                     </div>
                 </div>
             </div>

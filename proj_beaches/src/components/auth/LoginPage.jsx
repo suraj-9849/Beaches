@@ -17,21 +17,19 @@ const LoginPage = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
     } catch (error) {
-      setMessage('Error :' + error.message);
+      setMessage('Error: ' + error.message);
     }
   };
 
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-sky-400 to-blue-500 flex items-center justify-center p-4">
-        <div className="relative max-w-md w-full">
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg transform -rotate-6"></div>
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg transform rotate-6"></div>
+      <div className="min-h-screen flex items-center justify-center p-4 ">
+        <div className="relative max-w-md w-full p-1 bg-gradient-to-r from-blue-500 to-teal-400 rounded-lg">
           <div className="relative bg-white rounded-lg shadow-lg p-8">
             <div className="flex justify-center mb-6">
             </div>
-            <h2 className="text-3xl font-bold text-center mb-6 text-blue-600">Login</h2>
+            <h2 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-blue-600 to-teal-400 text-transparent  bg-clip-text">Login</h2>
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Email:</label>
@@ -39,7 +37,7 @@ const LoginPage = () => {
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 py-3 block w-full rounded-md  border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                   placeholder="surfer@beachlife.com"
                 />
               </div>
@@ -49,13 +47,13 @@ const LoginPage = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 py-3 block w-full rounded-md  border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                   placeholder="••••••••"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Dive In
               </button>
@@ -64,13 +62,13 @@ const LoginPage = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">Create the New Account</p>
               <a href="/register" className="font-medium text-blue-600 hover:text-blue-500">
-               Register Here
+                Register Here
               </a>
             </div>
             <div className="mt-2 text-center">
               <p className="text-sm text-gray-600">Create an Account as NGO</p>
               <a href="/org-register" className="font-medium text-blue-600 hover:text-blue-500">
-               Register Here
+                Register Here
               </a>
             </div>
           </div>

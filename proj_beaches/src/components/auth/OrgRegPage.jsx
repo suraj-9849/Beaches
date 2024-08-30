@@ -40,10 +40,8 @@ const OrgRegPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-blue-300 via-green-200 to-yellow-200 flex items-center justify-center p-4">
-        <div className="relative max-w-md w-full">
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg transform -rotate-2"></div>
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg transform rotate-2"></div>
+      <div className="min-h-screen flex items-center justify-center p-3">
+        <div className="relative max-w-md w-full p-1 rounded-md bg-gradient-to-b from-blue-300 via-green-200 to-yellow-200 ">
           <div className="relative bg-white rounded-lg shadow-lg p-8">
            
             <h2 className="text-3xl font-bold text-center mb-6 text-blue-600">NGO Organization Sign-Up</h2>

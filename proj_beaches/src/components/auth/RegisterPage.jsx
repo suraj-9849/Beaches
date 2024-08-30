@@ -27,16 +27,13 @@ const RegisterPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-red-400 via-orange-300 to-yellow-200 flex items-center justify-center p-4">
-        <div className="relative max-w-md w-full">
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg transform -rotate-3"></div>
-          <div className="absolute inset-0 bg-white rounded-lg shadow-lg transform rotate-3"></div>
+      <div className="min-h-screen flex items-center justify-center p-4 ">
+        <div className="relative max-w-md w-full p-1 bg-gradient-to-r from-orange-400 to-yellow-300 rounded-lg">
           <div className="relative bg-white rounded-lg shadow-lg p-8">
-           
-            <h2 className="text-3xl font-bold text-center mb-6 text-orange-600">Register </h2>
+            <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-orange-500 to-yellow-400 text-transparent bg-clip-text">Register</h2>
             <form onSubmit={handleRegister} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700"> Name:</label>
+                <label className="block text-sm font-medium text-gray-700">Name:</label>
                 <input
                   type="text"
                   value={name}
@@ -67,20 +64,20 @@ const RegisterPage = () => {
               </div>
               <button
                 type="submit"
-                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-yellow-400 hover:from-orange-600 hover:to-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
               >
-                Register
+                Create Account
               </button>
             </form>
             {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
             <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">Already have an account?</p>
               <a href="/login" className="font-medium text-orange-600 hover:text-orange-500">
-                Login
+                Login Here
               </a>
             </div>
           </div>
         </div>
-      
       </div>
       <Footer />
     </>

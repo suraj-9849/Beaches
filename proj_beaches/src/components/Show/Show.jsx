@@ -13,16 +13,9 @@ const Show = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow bg-gradient-to-br from-blue-400 via-teal-300 to-purple-400 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div className="absolute top-96 -right-48 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-24 left-48 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div>
+      <main className="flex-grow  relative overflow-hidden">
 
-        {/* Content container */}
-        <div className="relative z-10 container mx-auto px-4 py-12 mt-10 pb-32"> {/* Added pb-32 for footer space */}
+        <div className="relative z-10 container mx-auto px-4 py-12 mt-10 pb-32"> 
           {/* Beach Carousel Section */}
           <section className="mb-20">
             <CarouselWithDetails beachLocation={beachLocation} lat={lat} long={long} name={name} />

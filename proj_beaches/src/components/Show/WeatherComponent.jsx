@@ -1,20 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Sun, Droplet, Wind, Waves, ChevronLeft, ChevronRight, Thermometer, CloudRain } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Sun, Droplet, Wind, Waves, ChevronLeft, ChevronRight, CloudRain, Umbrella, Thermometer } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import Descript from './Descript';
+
 const convertTemperature = (temp, toFahrenheit) => {
   return toFahrenheit ? (temp * 9/5) + 32 : temp;
 };
 
 const WeatherIcon = ({ weatherCode }) => {
-  switch(weatherCode) {
-    case 0: return <Sun className="w-12 h-12 text-yellow-400" />;
-    case 1:
-    case 2:
-    case 3: return <CloudRain className="w-12 h-12 text-gray-400" />;
-    default: return <CloudRain className="w-12 h-12 text-blue-400" />;
-  }
+  const icons = {
+    0: <Sun className="w-12 h-12 text-yellow-400" />,
+    1: <CloudRain className="w-12 h-12 text-gray-400" />,
+    2: <CloudRain className="w-12 h-12 text-gray-400" />,
+    3: <CloudRain className="w-12 h-12 text-gray-400" />,
+    4: <Umbrella className="w-12 h-12 text-blue-400" />,
+  };
+  return icons[weatherCode] || <CloudRain className="w-12 h-12 text-blue-400" />;
 };
+
+const WeatherCard = ({ icon, title, value, unit }) => (
+  <div className="bg-white bg-opacity-10 p-6 rounded-2xl flex items-center justify-between backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-opacity-20">
+    <div className="flex items-center">
+      {icon}
+      <div className="ml-4">
+        <p className="text-lg opacity-80">{title}</p>
+        <p className="text-4xl font-bold">{value} {unit}</p>
+      </div>
+    </div>
+  </div>
+);
 
 const WeatherComponent = ({ lat, long }) => {
   const [weatherData, setWeatherData] = useState(null);
@@ -22,51 +36,52 @@ const WeatherComponent = ({ lat, long }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [forecastData, setForecastData] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,relative_humidity_2m,rain,showers,weather_code,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_direction_80m,wind_gusts_10m,temperature_80m`;
-      
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const data = await response.json();
-
-        const selectedDateString = selectedDate.toISOString().split('T')[0];
-        const hour = selectedDate.getHours();
-        const index = data.hourly.time.findIndex((time) => time.startsWith(selectedDateString) && new Date(time).getHours() === hour);
-
-        if (index !== -1) {
-          const tempCelsius = data.hourly.temperature_2m[index];
-          const waterTempCelsius = data.hourly.temperature_80m[index];
-          const windSpeedKmh = data.hourly.wind_speed_10m[index];
-          const waveHeight = (windSpeedKmh ** 2) / 9.81; 
-          const humidity = data.hourly.relative_humidity_2m[index];
-          const weatherCode = data.hourly.weather_code[index];
-
-          setWeatherData({
-            airTemperature: convertTemperature(tempCelsius, tempUnit === 'F'),
-            waterTemperature: convertTemperature(waterTempCelsius, tempUnit === 'F'),
-            windSpeed: windSpeedKmh / 3.6,
-            waveHeight,
-            humidity,
-            weatherCode
-          });
-
-          // Prepare forecast data for the chart
-          const forecastData = data.hourly.time.slice(index, index + 24).map((time, i) => ({
-            time: new Date(time).getHours(),
-            temperature: convertTemperature(data.hourly.temperature_2m[index + i], tempUnit === 'F'),
-          }));
-          setForecastData(forecastData);
-        }
-      } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+  const fetchWeatherData = async () => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,relative_humidity_2m,rain,showers,weather_code,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_direction_80m,wind_gusts_10m,temperature_80m`;
+    
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
       }
-    };
+      const data = await response.json();
 
-    fetchData();
+      const selectedDateString = selectedDate.toISOString().split('T')[0];
+      const hour = selectedDate.getHours();
+      const index = data.hourly.time.findIndex((time) => time.startsWith(selectedDateString) && new Date(time).getHours() === hour);
+
+      if (index !== -1) {
+        const tempCelsius = data.hourly.temperature_2m[index];
+        const waterTempCelsius = data.hourly.temperature_80m[index];
+        const windSpeedKmh = data.hourly.wind_speed_10m[index];
+        const waveHeight = (windSpeedKmh ** 2) / 9.81; 
+        const humidity = data.hourly.relative_humidity_2m[index];
+        const weatherCode = data.hourly.weather_code[index];
+
+        setWeatherData({
+          airTemperature: convertTemperature(tempCelsius, tempUnit === 'F'),
+          waterTemperature: convertTemperature(waterTempCelsius, tempUnit === 'F'),
+          windSpeed: windSpeedKmh / 3.6,
+          waveHeight,
+          humidity,
+          weatherCode
+        });
+
+        const forecastData = data.hourly.time.slice(index, index + 24).map((time, i) => ({
+          time: new Date(time).getHours(),
+          temperature: convertTemperature(data.hourly.temperature_2m[index + i], tempUnit === 'F'),
+          humidity: data.hourly.relative_humidity_2m[index + i],
+          windSpeed: data.hourly.wind_speed_10m[index + i] / 3.6,
+        }));
+        setForecastData(forecastData);
+      }
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWeatherData();
   }, [selectedDate, tempUnit, lat, long]);
 
   const toggleTempUnit = () => {
@@ -79,83 +94,76 @@ const WeatherComponent = ({ lat, long }) => {
     setSelectedDate(newDate);
   };
 
+  const memoizedForecastChart = useMemo(() => (
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={forecastData}>
+        <XAxis dataKey="time" stroke="#fff" />
+        <YAxis yAxisId="left" stroke="#ffd700" />
+        <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+        <Tooltip 
+          contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '8px' }}
+          labelStyle={{ color: '#333' }}
+        />
+        <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#ffd700" strokeWidth={2} dot={false} />
+        <Line yAxisId="right" type="monotone" dataKey="humidity" stroke="#82ca9d" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ResponsiveContainer>
+  ), [forecastData]);
+
   if (!weatherData) {
     return <div className="text-center text-lg text-white">Loading...</div>;
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl shadow-2xl backdrop-blur-lg border border-white border-opacity-20">
-      <h2 className="text-4xl font-bold mb-8 text-white text-center">Weather Dashboard</h2>
+    <div className="p-8 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl backdrop-blur-lg border border-white border-opacity-20">
+      <h2 className="text-4xl font-bold mb-8 text-center">Weather Dashboard</h2>
       
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <button onClick={() => handleDateChange('prev')} className="text-white hover:text-yellow-400 transition-all duration-300">
-            <ChevronLeft size={32} />
-          </button>
-          <h3 className="text-2xl font-semibold text-white">
-            {selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </h3>
-          <button onClick={() => handleDateChange('next')} className="text-white hover:text-yellow-400 transition-all duration-300">
-            <ChevronRight size={32} />
-          </button>
-        </div>
+      <div className="mb-8 flex items-center justify-between">
+        <button onClick={() => handleDateChange('prev')} className="hover:text-yellow-400 transition-all duration-300">
+          <ChevronLeft size={32} />
+        </button>
+        <h3 className="text-2xl font-semibold">
+          {selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+        </h3>
+        <button onClick={() => handleDateChange('next')} className="hover:text-yellow-400 transition-all duration-300">
+          <ChevronRight size={32} />
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white bg-opacity-10 p-6 rounded-2xl flex items-center justify-between backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-opacity-20">
-          <div className="flex items-center">
-            <WeatherIcon weatherCode={weatherData.weatherCode} />
-            <div className="ml-4">
-              <p className="text-lg text-white opacity-80">Air Temperature</p>
-              <p className="text-4xl font-bold text-white">{weatherData.airTemperature.toFixed(1)}°{tempUnit}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white bg-opacity-10 p-6 rounded-2xl flex items-center justify-between backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-opacity-20">
-          <div className="flex items-center">
-            <Droplet className="w-12 h-12 text-blue-400" />
-            <div className="ml-4">
-              <p className="text-lg text-white opacity-80">Water Temperature</p>
-              <p className="text-4xl font-bold text-white">{weatherData.waterTemperature.toFixed(1)}°{tempUnit}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white bg-opacity-10 p-6 rounded-2xl flex items-center justify-between backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-opacity-20">
-          <div className="flex items-center">
-            <Wind className="w-12 h-12 text-green-400" />
-            <div className="ml-4">
-              <p className="text-lg text-white opacity-80">Wind Speed</p>
-              <p className="text-4xl font-bold text-white">{weatherData.windSpeed.toFixed(1)} m/s</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white bg-opacity-10 p-6 rounded-2xl flex items-center justify-between backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-opacity-20">
-          <div className="flex items-center">
-            <Waves className="w-12 h-12 text-indigo-400" />
-            <div className="ml-4">
-              <p className="text-lg text-white opacity-80">Wave Height</p>
-              <p className="text-4xl font-bold text-white">{weatherData.waveHeight.toFixed(2)} m</p>
-            </div>
-          </div>
-        </div>
+        <WeatherCard 
+          icon={<WeatherIcon weatherCode={weatherData.weatherCode} />}
+          title="Air Temperature"
+          value={weatherData.airTemperature.toFixed(1)}
+          unit={`°${tempUnit}`}
+        />
+        <WeatherCard 
+          icon={<Droplet className="w-12 h-12 text-blue-400" />}
+          title="Water Temperature"
+          value={weatherData.waterTemperature.toFixed(1)}
+          unit={`°${tempUnit}`}
+        />
+        <WeatherCard 
+          icon={<Wind className="w-12 h-12 text-green-400" />}
+          title="Wind Speed"
+          value={weatherData.windSpeed.toFixed(1)}
+          unit="m/s"
+        />
+        <WeatherCard 
+          icon={<Waves className="w-12 h-12 text-indigo-400" />}
+          title="Wave Height"
+          value={weatherData.waveHeight.toFixed(2)}
+          unit="m"
+        />
       </div>
 
       <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md shadow-lg mb-8">
-        <h4 className="text-2xl font-semibold text-white mb-4">24-Hour Forecast</h4>
-        <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={forecastData}>
-            <XAxis dataKey="time" stroke="#fff" />
-            <YAxis stroke="#fff" />
-            <Tooltip 
-              contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '8px' }}
-              labelStyle={{ color: '#333' }}
-            />
-            <Line type="monotone" dataKey="temperature" stroke="#ffd700" strokeWidth={2} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
+        <h4 className="text-2xl font-semibold mb-4">24-Hour Forecast</h4>
+        {memoizedForecastChart}
       </div>
-      <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md shadow-lg mb-8">
-        <h4 className="text-md font-semibold text-white mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
+
+      <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md mb-8">
+        <h4 className="text-md font-semibold mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
       </div>
 
       <button

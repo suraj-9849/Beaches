@@ -26,8 +26,6 @@ function Routing() {
         <Route path="/register" element={<RegisterPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/org-register" element={<OrgRegPage/>}/>
-
-
       </Routes>
     </div>
   );
