@@ -3,6 +3,11 @@ import { User, Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
+import {app} from '../firebase/firebaseConfig';
+import { onValue, ref } from 'firebase/database';
+import {db} from '../firebase/firebaseConfig';
+
+var ngo_checker = false;
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +17,15 @@ function Navbar() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      const ngo_ref=ref(db,"NG0");
+      onValue(ngo_ref,(snapshot)=>{
+        snapshot.forEach((childsnapshot)=>{
+          if(currentUser.email==childsnapshot.val().email)
+          {
+              ngo_checker=true;
+          }
+        })
+      })
     });
     return () => unsubscribe();
   }, []);
@@ -58,7 +72,7 @@ function Navbar() {
             <Link to='/events' className="text-white hover:text-gray-200 transition-colors px-4 py-2">
               Events
             </Link>
-            {user && (
+            {ngo_checker && (
               <Link to='/createEvent' className="text-white hover:text-gray-200 transition-colors px-4 py-2">
                 Create Event
               </Link>

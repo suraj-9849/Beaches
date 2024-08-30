@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getDatabase, push, ref } from 'firebase/database';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
+import { app } from '../../firebase/firebaseConfig';
 
 const OrgRegPage = () => {
   const [name, setName] = useState('');
@@ -11,6 +13,7 @@ const OrgRegPage = () => {
   const [organizationType, setOrganizationType] = useState('NGO');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const auth = getAuth(app);
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -25,6 +28,9 @@ const OrgRegPage = () => {
 
     try {
       await push(ngoRef, detailsObj);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
+      navigate('/');
       navigate('/');
     } catch (error) {
       setMessage('Error:' + error.message);
