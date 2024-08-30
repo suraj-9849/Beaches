@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <footer className="fixed bottom-0 left-0 w-full bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg">
+    <footer className="fixed bottom-0 left-0 w-full z-50 bg-gradient-to-r from-emerald-400 to-blue-500 shadow-lg">
       <div className="max-w-screen-xl mx-auto px-4">
         <nav className="flex justify-around items-center h-16">
           <Link to='/search'  ><FooterButton icon={<Search size={24} />} label="Search" /></Link>

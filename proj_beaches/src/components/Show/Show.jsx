@@ -44,7 +44,7 @@ const Show = () => {
           </svg>
         </div>
       </main>
-      <Footer className="fixed top-0 left-0 w-full bg-gray-900 text-white p-4 z-50 shadow-md" />
+      <Footer/>
     </div>
   );
 };
