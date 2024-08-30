@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import beachData from '../locations.json';
 import { Bookmark } from 'lucide-react';
 
 const BeachDivs = ({ filter }) => {
   const [beaches, setBeaches] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const allBeaches = [];
     Object.keys(beachData).forEach(state => {
       const stateBeaches = Object.keys(beachData[state]);
       stateBeaches.forEach(beach => {
-        allBeaches.push({ name: beach, location: state });
+        const { latitude, longitude } = beachData[state][beach] || {};
+        allBeaches.push({
+          name: beach,
+          location: state,
+          lat: latitude,
+          long: longitude
+        });
       });
     });
     setBeaches(allBeaches);
@@ -21,15 +29,29 @@ const BeachDivs = ({ filter }) => {
     beach.location.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const handleClick = (name, location, lat, long) => {
+    navigate(`/beach/${name}`, { state: { location, lat, long, name } });
+  };
+
+  const handleBookmarkClick = (e) => {
+    e.stopPropagation();
+    console.log("Bookmark clicked");
+  };
+
   return (
     <div className="flex-1 overflow-y-auto mb-20 bg-gradient-to-b from-blue-50 to-emerald-50">
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         {filteredBeaches.map((beach, index) => (
-          <li key={index} className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+          <li
+            key={index}
+            className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+            onClick={() => handleClick(beach.name, beach.location, beach.lat, beach.long)}
+          >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
-                src={``}
+                src={``}  // Add a relevant image URL or leave it as an empty string
                 className="w-full h-full object-cover"
+                alt={`${beach.name}`}
               />
             </div>
             <div className="p-4">
@@ -38,7 +60,10 @@ const BeachDivs = ({ filter }) => {
                   <h3 className="font-bold text-lg text-gray-800">{beach.name}</h3>
                   <p className="text-sm text-gray-600">{beach.location}</p>
                 </div>
-                <button className="text-emerald-500 hover:text-emerald-600 transition-colors duration-200">
+                <button
+                  className="text-emerald-500 hover:text-emerald-600 transition-colors duration-200"
+                  onClick={handleBookmarkClick}
+                >
                   <Bookmark size={24} />
                 </button>
               </div>
@@ -51,6 +76,6 @@ const BeachDivs = ({ filter }) => {
       </ul>
     </div>
   );
-}
+};
 
 export default BeachDivs;
