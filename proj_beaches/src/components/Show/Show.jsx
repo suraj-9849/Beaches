@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import CarouselWithDetails from './carousel.jsx';
+import CarouselWithDetails from './Carousel.jsx';
 import WeatherComponent from './WeatherComponent.jsx';
 import Navbar from '../Navbar.jsx';
 import Footer from '../Footer.jsx';
