@@ -38,14 +38,16 @@ function Navbar() {
           </Link>
         </div>
         <div className="flex items-center">
-          <button className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
-            {user ? (
-              <Link to='/profile'><User size={24} /></Link>
-            ) : (
-              <Link to='/login'><User size={24} /></Link>
-            )}
-          </button>
-          <button onClick={toggleMenu} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors lg:hidden">
+          {user ? (
+            <button onClick={handleLogout} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
+              <User size={24} />
+            </button>
+          ) : (
+            <Link to='/login' className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
+              <User size={24} />
+            </Link>
+          )}
+          <button onClick={toggleMenu} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors lg:hidden ml-2">
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
