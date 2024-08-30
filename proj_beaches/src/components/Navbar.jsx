@@ -19,7 +19,7 @@ function Navbar() {
         </div>
         <div className="flex items-center">
           <button className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
-            <User size={24} />
+            <Link to='/login'><User size={24} /></Link>
           </button>
           <button onClick={toggleMenu} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors lg:hidden">
             {isOpen ? <X size={24} /> : <Menu size={24} />}

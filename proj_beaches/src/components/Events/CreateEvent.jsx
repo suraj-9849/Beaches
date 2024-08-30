@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import {  MapPin } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 function CreateEvent() {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(null);
 
   const onSubmit = (data) => {
@@ -15,6 +17,9 @@ function CreateEvent() {
       const finalData = { ...data, logo: base64Logo };
       setFormData(finalData);
       console.log(finalData); 
+      setTimeout(() => {
+        navigate("/events");
+      }, 1000);
     };
     reader.readAsDataURL(data.logo[0]);
   };
@@ -45,6 +50,20 @@ function CreateEvent() {
                   placeholder="NGO Name"
                 />
                 {errors.ngoName && <p className="mt-1 text-xs text-red-500">{errors.ngoName.message}</p>}
+              </div>
+
+
+              <div className="mb-4">
+                <label htmlFor="ngo-name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <input
+                  id="ngo-name"
+                  {...register("description", { required: "Description is required" })}
+                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Description"
+                />
+                {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description.message}</p>}
               </div>
               <div className="mb-4">
                 <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
@@ -128,11 +147,7 @@ function CreateEvent() {
             <div>
               <button
                 type="submit"
-                onClick={()=>{
-                  setTimeout(()=>{
-                    window.location.href = '/events'
-                  },2000)
-                }}
+               
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
               >
                 Create Event
