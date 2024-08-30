@@ -48,7 +48,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[8vh] flex justify-between items-center">
         <div className="flex items-center">
           <Link to='/' className="text-white hover:text-gray-200 transition-colors">
-            <h1 className='text-3xl font-semibold'>Beaches</h1>
+            <h1 className='text-3xl font-semibold'>S&nbsp;h&nbsp;o&nbsp;r&nbsp;e&nbsp;s</h1>
           </Link>
         </div>
         <div className="flex items-center">

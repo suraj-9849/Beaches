@@ -13,9 +13,9 @@ const CarouselWithDetails = ({ name, beachLocation }) => {
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
     const [photoModalIsOpen, setPhotoModalIsOpen] = useState(false);
     const [carouselImages, setCarouselImages] = useState([
-        'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&w=600',
-        'https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=600',
-        'https://images.pexels.com/photos/1449767/pexels-photo-1449767.jpeg?auto=compress&cs=tinysrgb&w=600',
+        'https://media.istockphoto.com/id/1369829721/photo/radhanagar-beach-swaraj-dweep.jpg?s=612x612&w=0&k=20&c=-eVyFIsr8RfCGptjDqmUKkQ16QN8Rh2AVF1u4ds1xWU=',
+        'https://media.istockphoto.com/id/1223106246/photo/empty-wooden-terrace-with-tropical-beach-and-clear-sky-background.jpg?s=612x612&w=0&k=20&c=TG9od-OqoHYPw1QPVFCYEMlTNCWm3BAFHtbIiH0UZZo=',
+        'https://media.istockphoto.com/id/1321697305/photo/chairs-in-tropical-beach-with-palm-trees-on-coral-island.jpg?s=612x612&w=0&k=20&c=_yuHIAdYyD0ikp3CshcvF4liJ8la9YXh3m3x1lLdl54=',
     ]);
     const [newReview, setNewReview] = useState("");
     const [newImage, setNewImage] = useState(null);
@@ -113,10 +113,17 @@ const CarouselWithDetails = ({ name, beachLocation }) => {
                     ))}
                 </Slider>
                 <div className="absolute bottom-4 md:bottom-8 left-4 md:left-8 right-4 md:right-8 text-white z-10">
-                    <h1 className="text-3xl md:text-5xl font-extrabold mb-1 md:mb-2 text-black tracking-wide text-shadow">{name}</h1>
+                    <h1 className="text-3xl md:text-5xl font-extrabold mb-1 md:mb-2 tracking-wide 
+   text-gray-800 drop-shadow-[0_2px_4px_rgba(100,100,100,0.6)]">
+                        {name}
+                    </h1>
+
                     <div className="flex items-center space-x-2 text-sm md:text-xl">
                         <MapPin className="text-red-400" size={16} />
-                        <h2 className="font-semibold text-black text-shadow">{beachLocation}</h2>
+                        <h2 className="font-semibold text-gray-800 drop-shadow-[0_2px_4px_rgba(100,100,100,0.6)]">
+                            {beachLocation}
+                        </h2>
+
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import beachData from '../locations.json';
+import imageData from './imageData.json'; 
 import { Bookmark } from 'lucide-react';
 
 const BeachDivs = ({ filter }) => {
@@ -23,6 +24,12 @@ const BeachDivs = ({ filter }) => {
     });
     setBeaches(allBeaches);
   }, []);
+
+  // Update the getRandomImage function to access the 'url' property
+  const getRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * imageData.length);
+    return imageData[randomIndex].url;
+  };
 
   const filteredBeaches = beaches.filter(beach =>
     beach.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -49,7 +56,7 @@ const BeachDivs = ({ filter }) => {
           >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
-                src={``}  // Add a relevant image URL or leave it as an empty string
+                src={getRandomImage()}  // Use the random image function
                 className="w-full h-full object-cover"
                 alt={`${beach.name}`}
               />
