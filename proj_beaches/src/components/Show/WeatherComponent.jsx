@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-// Helper function to convert temperature between Celsius and Fahrenheit
 const convertTemperature = (temp, toFahrenheit) => {
   return toFahrenheit ? (temp * 9/5) + 32 : temp;
 };
 
-// Component to display weather details
+
 const WeatherComponent = ({lat,long}) => {
   const [weatherData, setWeatherData] = useState(null);
-  const [tempUnit, setTempUnit] = useState('C'); // Celsius by default
+  const [tempUnit, setTempUnit] = useState('C');
   const [selectedDate, setSelectedDate] = useState(new Date());
 
 
@@ -23,7 +22,7 @@ const WeatherComponent = ({lat,long}) => {
         }
         const data = await response.json();
 
-        // Determine the index of the selected date in the hourly data
+   
         const selectedDateString = selectedDate.toISOString().split('T')[0];
         const hour = selectedDate.getHours();
         const index = data.hourly.time.findIndex((time) => time.startsWith(selectedDateString) && new Date(time).getHours() === hour);
@@ -32,12 +31,12 @@ const WeatherComponent = ({lat,long}) => {
           const tempCelsius = data.hourly.temperature_2m[index];
           const waterTempCelsius = data.hourly.temperature_80m[index];
           const windSpeedKmh = data.hourly.wind_speed_10m[index];
-          const waveHeight = (windSpeedKmh ** 2) / 9.81; // Simplified
+          const waveHeight = (windSpeedKmh ** 2) / 9.81; 
 
           setWeatherData({
             airTemperature: convertTemperature(tempCelsius, tempUnit === 'F'),
             waterTemperature: convertTemperature(waterTempCelsius, tempUnit === 'F'),
-            windSpeed: windSpeedKmh / 3.6, // Convert km/h to m/s
+            windSpeed: windSpeedKmh / 3.6,
             waveHeight
           });
         }
@@ -47,7 +46,7 @@ const WeatherComponent = ({lat,long}) => {
     };
 
     fetchData();
-  }, [selectedDate, tempUnit]); // Fetch data when selectedDate or tempUnit changes
+  }, [selectedDate, tempUnit]);
 
   const toggleTempUnit = () => {
     setTempUnit(tempUnit === 'C' ? 'F' : 'C');

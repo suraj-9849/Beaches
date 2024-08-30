@@ -6,14 +6,14 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const CarouselWithDetails = ({name,beachLocation}) => {
-    const locationName = name; // Example location name
-    const [rating, setRating] = useState(0); // Initial rating value
+    const locationName = name; 
+    const [rating, setRating] = useState(0);
     const [reviewModalIsOpen, setReviewModalIsOpen] = useState(false);
     const [photoModalIsOpen, setPhotoModalIsOpen] = useState(false);
     const [carouselImages, setCarouselImages] = useState([
-        'image1.jpg',
-        'image2.jpg',
-        'image3.jpg',
+        'beach1Image',
+        'beach2Image',
+        'beach3Image',
     ]);
     const [newReview, setNewReview] = useState("");
     const [newImage, setNewImage] = useState(null);
@@ -25,7 +25,7 @@ const CarouselWithDetails = ({name,beachLocation}) => {
     const handleReviewSubmit = () => {
         console.log("Review Submitted:", newReview);
     
-        setReviewModalIsOpen(false); // Close the modal after submission
+        setReviewModalIsOpen(false); 
     };
 
     const handlePhotoChange = (e) => {
@@ -38,8 +38,8 @@ const CarouselWithDetails = ({name,beachLocation}) => {
     const handlePhotoUpload = () => {
         if (newImage) {
             setCarouselImages([...carouselImages, newImage]);
-            setPhotoModalIsOpen(false); // Close the modal after uploading
-            setNewImage(null); // Reset the newImage state
+            setPhotoModalIsOpen(false); 
+            setNewImage(null); 
         }
     };
 
@@ -74,7 +74,7 @@ const CarouselWithDetails = ({name,beachLocation}) => {
                     size={30}
                     activeColor="#ffd700"
                     value={rating}
-                    isHalf={true} // Allows for half-star ratings
+                    isHalf={true} 
                 />
                 <div className="ml-4 text-lg font-bold">
                     {rating.toFixed(1)} / 5
