@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sun, Droplet, Wind, Waves, ChevronLeft, ChevronRight, Thermometer, CloudRain } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-
+import Descript from './Descript';
 const convertTemperature = (temp, toFahrenheit) => {
   return toFahrenheit ? (temp * 9/5) + 32 : temp;
 };
@@ -153,6 +153,9 @@ const WeatherComponent = ({ lat, long }) => {
             <Line type="monotone" dataKey="temperature" stroke="#ffd700" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
+      </div>
+      <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md shadow-lg mb-8">
+        <h4 className="text-md font-semibold text-white mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
       </div>
 
       <button
