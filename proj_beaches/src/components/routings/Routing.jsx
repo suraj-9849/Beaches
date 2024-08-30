@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "../Home/Home";
+import CreateEvent from '../Events/CreateEvent'
+import Events from '../Events/Events'
 import BookMark from "../BookMark/BookMark";
 import Map from "../Map/Map";
 import Search from "../Search/Search";
@@ -13,6 +15,8 @@ function Routing() {
         <Route path="/map" element={< Map />} />
         <Route path="/BookMark" element={< BookMark />} />
         <Route path="/search" element={< Search />} />
+        <Route path="/createEvent" element={< CreateEvent />} />
+        <Route path="/events" element={< Events />} />
         <Route path="/beach/:name" element={<Show />} />
       </Routes>
     </div>
