@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
 import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDci-vfJTiCOyCp67rajVI6PGhWdZsFOys",
@@ -13,18 +12,44 @@ const firebaseConfig = {
   databaseURL:"https://beach-auth-3b809-default-rtdb.asia-southeast1.firebasedatabase.app/"
 };
 
+
 const app = initializeApp(firebaseConfig);
+const ngo_ref=getDatabase(app);
+const ref_ngo=ref(ngo_ref,'NG0');
 const auth = getAuth();
-const db = getFirestore();
 
 if (document.getElementById("reg-button")) {
   const button = document.getElementById("reg-button");
+  const role_button=document.getElementById("organizationType");
 
   button.addEventListener('click', (event) => {
     event.preventDefault();
 
     const email = document.getElementById("email-input").value;
     const pass = document.getElementById("password-input").value;
+
+    if(role_button.value=="NGO")
+    {
+      const org_name=document.getElementById("name-input");
+      var details_obj=`${org_name.value}`;
+      var details_obj={
+        name:org_name.value,
+        email:email,
+        org_type:role_button.value
+      }
+      push(ref_ngo,details_obj);
+    }
+    else
+    {
+        const org_name=document.getElementById("name-input");
+        var details_obj=`${org_name.value}`;
+        var details_obj={
+          name:org_name.value,
+          email:email,
+          org_type:role_button.value
+        }
+        push(ref_ngo,details_obj);
+    }
 
     createUserWithEmailAndPassword(auth, email, pass)
       .then(cred => {
@@ -34,14 +59,6 @@ if (document.getElementById("reg-button")) {
       });
   });
 
-  const logout = document.getElementById("logout-button");
-
-  logout.addEventListener('click', (event) => {
-    event.preventDefault();
-    auth.signOut().then(() => {
-      console.log("Signed out!!");
-    });
-  });
 } else if (document.getElementById("login-button")) {
   const login = document.getElementById("login-button");
 

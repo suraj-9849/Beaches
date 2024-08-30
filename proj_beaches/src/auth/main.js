@@ -13,7 +13,37 @@ const firebaseConfig = {
   };
   
 const app = initializeApp(firebaseConfig);
-const db=getDatabase(app);const auth=getAuth();
+const db=getDatabase(app);
+const ngoRef=ref(db,"NG0");
+const auth=getAuth();
+
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+
+    onValue(ngoRef, (snapshot) => {
+      let isOrg = false;
+
+      snapshot.forEach(childSnapshot => {
+        const childData = childSnapshot.val();
+
+        if (childData.email === user.email) {
+          isOrg = true;
+          console.log("This is an organisation!");
+          //ngo and org code here!
+        }
+      });
+
+      if (!isOrg) {
+        console.log("Not an organisation");
+      }
+    }, {
+      onlyOnce: true
+    });
+  } else {
+    console.log("No user is authenticated");
+  }
+});
 
 
 const logout=document.getElementById("logout-button");
@@ -23,6 +53,8 @@ logout.addEventListener("click",(event)=>{
     auth.signOut();
     window.location.href='./login.html';
 })
+
+
 
 
 
