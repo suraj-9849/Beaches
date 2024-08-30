@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth } from '../firebase/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
   };
 
   return (
@@ -19,7 +39,11 @@ function Navbar() {
         </div>
         <div className="flex items-center">
           <button className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
-            <Link to='/login'><User size={24} /></Link>
+            {user ? (
+              <Link to='/profile'><User size={24} /></Link>
+            ) : (
+              <Link to='/login'><User size={24} /></Link>
+            )}
           </button>
           <button onClick={toggleMenu} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors lg:hidden">
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -32,9 +56,20 @@ function Navbar() {
             <Link to='/events' className="text-white hover:text-gray-200 transition-colors px-4 py-2">
               Events
             </Link>
-            <Link to='/createEvent' className="text-white hover:text-gray-200 transition-colors px-4 py-2">
-              Create Event
-            </Link>
+            {user && (
+              <Link to='/createEvent' className="text-white hover:text-gray-200 transition-colors px-4 py-2">
+                Create Event
+              </Link>
+            )}
+            {user ? (
+              <button onClick={handleLogout} className="text-white hover:text-gray-200 transition-colors px-4 py-2">
+                Logout
+              </button>
+            ) : (
+              <Link to='/login' className="text-white hover:text-gray-200 transition-colors px-4 py-2">
+                Login
+              </Link>
+            )}
           </nav>
         </div>
       )}
