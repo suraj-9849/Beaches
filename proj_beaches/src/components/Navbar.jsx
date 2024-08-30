@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { User, Menu, X } from 'lucide-react';
+import { User, Menu, X, Bell } from 'lucide-react'; // Import the Bell (alert) icon
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
-import {app} from '../firebase/firebaseConfig';
+import { app } from '../firebase/firebaseConfig';
 import { onValue, ref } from 'firebase/database';
-import {db} from '../firebase/firebaseConfig';
+import { db } from '../firebase/firebaseConfig';
 
 var ngo_checker = false;
 
@@ -17,15 +17,14 @@ function Navbar() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      const ngo_ref=ref(db,"NG0");
-      onValue(ngo_ref,(snapshot)=>{
-        snapshot.forEach((childsnapshot)=>{
-          if(currentUser.email==childsnapshot.val().email)
-          {
-              ngo_checker=true;
+      const ngo_ref = ref(db, "NG0");
+      onValue(ngo_ref, (snapshot) => {
+        snapshot.forEach((childsnapshot) => {
+          if (currentUser.email === childsnapshot.val().email) {
+            ngo_checker = true;
           }
-        })
-      })
+        });
+      });
     });
     return () => unsubscribe();
   }, []);
@@ -52,6 +51,9 @@ function Navbar() {
           </Link>
         </div>
         <div className="flex items-center">
+          <Link to='/alerts' className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
+            <Bell size={24} /> {/* Alert icon with routing */}
+          </Link>
           {user ? (
             <button onClick={handleLogout} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
               <User size={24} />
