@@ -11,6 +11,7 @@ import RegisterPage from "../auth/RegisterPage";
 import LoginPage from "../auth/LoginPage";
 import MainPage from "../auth/MainPage";
 import OrgRegPage from "../auth/OrgRegPage";
+import AlertPage from "../Misc/Alerts";
 
 function Routing() {
   return (
@@ -26,6 +27,7 @@ function Routing() {
         <Route path="/register" element={<RegisterPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/org-register" element={<OrgRegPage/>}/>
+        {/* <Route path="/alerts"> element={<AlertPage/>}</Route> */}
       </Routes>
     </div>
   );

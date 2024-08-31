@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { User, Menu, X } from 'lucide-react';
+import { User, Menu, X, Bell } from 'lucide-react'; // Import the Bell (alert) icon
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
-import {app} from '../firebase/firebaseConfig';
+import { app } from '../firebase/firebaseConfig';
 import { onValue, ref } from 'firebase/database';
-import {db} from '../firebase/firebaseConfig';
+import { db } from '../firebase/firebaseConfig';
 
 var ngo_checker = false;
 
@@ -17,15 +17,14 @@ function Navbar() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      const ngo_ref=ref(db,"NG0");
-      onValue(ngo_ref,(snapshot)=>{
-        snapshot.forEach((childsnapshot)=>{
-          if(currentUser.email==childsnapshot.val().email)
-          {
-              ngo_checker=true;
+      const ngo_ref = ref(db, "NG0");
+      onValue(ngo_ref, (snapshot) => {
+        snapshot.forEach((childsnapshot) => {
+          if (currentUser.email === childsnapshot.val().email) {
+            ngo_checker = true;
           }
-        })
-      })
+        });
+      });
     });
     return () => unsubscribe();
   }, []);
@@ -48,10 +47,13 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[8vh] flex justify-between items-center">
         <div className="flex items-center">
           <Link to='/' className="text-white hover:text-gray-200 transition-colors">
-            <h1 className='text-3xl font-semibold'>Beaches</h1>
+            <h1 className='text-3xl font-semibold'>S&nbsp;h&nbsp;o&nbsp;r&nbsp;e&nbsp;s</h1>
           </Link>
         </div>
         <div className="flex items-center">
+          <Link to='/alerts' className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
+            <Bell size={24} /> {/* Alert icon with routing */}
+          </Link>
           {user ? (
             <button onClick={handleLogout} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors ml-4">
               <User size={24} />
