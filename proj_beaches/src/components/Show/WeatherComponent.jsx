@@ -115,7 +115,7 @@ const WeatherComponent = ({ lat, long }) => {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl backdrop-blur-lg border border-white border-opacity-20">
+    <div className="p-8 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl  border border-white border-opacity-20">
       <h2 className="text-4xl font-bold mb-8 text-center">Weather Dashboard</h2>
       
       <div className="mb-8 flex items-center justify-between">

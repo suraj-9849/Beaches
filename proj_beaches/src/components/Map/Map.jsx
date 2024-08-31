@@ -10,7 +10,6 @@ import {
 import beachesData from "../locations.json";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
-import { motion, AnimatePresence } from "framer-motion";
 
 const Map = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -137,9 +136,14 @@ const Map = () => {
 
     requestAnimationFrame(animate);
   };
-  function handleGoToSHow() {
-    navigate(`/beach/${name}`, { state: { location, lat, long, name } });
+
+  function handleGoToShow() {
+    if (selectedBeach) {
+      const { name, latitude: lat, longitude: long, location } = selectedBeach;
+      navigate(`/beach/${name}`, { state: { location, lat, long, name } });
+    }
   }
+
   const toggleMapType = () => {
     setMapType((prevType) =>
       prevType === "roadmap" ? "satellite" : "roadmap"
@@ -154,84 +158,62 @@ const Map = () => {
           className="w-full md:w-3/4 h-[75vh] md:h-full relative"
           ref={mapRef}
         >
-          <AnimatePresence>
-            {selectedBeach && (
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.3 }}
-                className="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-lg shadow-lg"
-              >
-                <div className="flex justify-between items-start">
-                  <h3 className="text-xl font-bold text-blue-800 mb-2">
-                    {selectedBeach.name}
-                  </h3>
-                  <button
-                    onClick={() => setSelectedBeach(null)}
-                    className="text-gray-500 hover:text-gray-700 transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-                <Link
-                  onClick={handleGoToSHow}
-                  className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          {selectedBeach && (
+            <div
+              className="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-lg shadow-lg"
+            >
+              <div className="flex justify-between items-start">
+                <h3 className="text-xl font-bold text-blue-800 mb-2">
+                  {selectedBeach.name}
+                </h3>
+                <button
+                  onClick={() => setSelectedBeach(null)}
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
                 >
-                  View Details
-                </Link>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        <motion.div
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
-          className="w-full md:w-1/4 bg-white p-4 overflow-y-auto shadow-lg"
-        >
-          <AnimatePresence>
-            {showInfo && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="bg-blue-100 p-4 rounded-lg mb-4"
+                  <X size={20} />
+                </button>
+              </div>
+              <Link
+                onClick={handleGoToShow}
+                className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
               >
-                <h3 className="font-bold mb-2">How to use this map:</h3>
-                <ul className="list-disc pl-5">
-                  <li>Click on a marker to see beach details</li>
-                  <li>Use zoom buttons to adjust view</li>
-                  <li>Drag the map to explore</li>
-                  <li>Toggle between map types</li>
-                </ul>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                View Details
+              </Link>
+            </div>
+          )}
+        </div>
+        <div className="w-full md:w-1/4 bg-white p-4 overflow-y-auto shadow-lg">
+          {showInfo && (
+            <div className="bg-blue-100 p-4 rounded-lg mb-4">
+              <h3 className="font-bold mb-2">How to use this map:</h3>
+              <ul className="list-disc pl-5">
+                <li>Click on a marker to see beach details</li>
+                <li>Use zoom buttons to adjust view</li>
+                <li>Drag the map to explore</li>
+                <li>Toggle between map types</li>
+              </ul>
+            </div>
+          )}
           {!selectedBeach && (
             <p className="text-gray-600">
               Select a beach marker to view details.
             </p>
           )}
-        </motion.div>
+        </div>
       </main>
       <div className="fixed bottom-4 right-4 flex flex-col space-y-2">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+        <button
           onClick={toggleMapType}
           className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
         >
           <Layers size={24} className="text-blue-500" />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+        </button>
+        <button
           onClick={() => setShowInfo(!showInfo)}
           className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors"
         >
           <Info size={24} className="text-blue-500" />
-        </motion.button>
+        </button>
       </div>
       <Footer />
     </div>

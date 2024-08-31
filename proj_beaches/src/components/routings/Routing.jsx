@@ -27,7 +27,7 @@ function Routing() {
         <Route path="/register" element={<RegisterPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/org-register" element={<OrgRegPage/>}/>
-        {/* <Route path="/alerts"> element={<AlertPage/>}</Route> */}
+        <Route path="/alerts" element={<AlertPage/>} />
       </Routes>
     </div>
   );
