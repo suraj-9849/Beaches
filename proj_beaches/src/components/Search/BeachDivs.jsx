@@ -3,10 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import beachData from '../locations.json';
 import imageData from './imageData.json'; 
 import { Bookmark } from 'lucide-react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { ref, set } from 'firebase/database';
+import { auth, db } from '../../firebase/firebaseConfig';
 
 const BeachDivs = ({ filter }) => {
   const [beaches, setBeaches] = useState([]);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user ? user : null);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const allBeaches = [];
@@ -25,7 +37,6 @@ const BeachDivs = ({ filter }) => {
     setBeaches(allBeaches);
   }, []);
 
-  // Update the getRandomImage function to access the 'url' property
   const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * imageData.length);
     return imageData[randomIndex].url;
@@ -40,9 +51,28 @@ const BeachDivs = ({ filter }) => {
     navigate(`/beach/${name}`, { state: { location, lat, long, name } });
   };
 
-  const handleBookmarkClick = (e) => {
+  const handleBookmarkClick = (e, beach) => {
     e.stopPropagation();
-    console.log("Bookmark clicked");
+
+    if (!user) {
+      alert("You need to be logged in to bookmark beaches.");
+      return;
+    }
+
+    const bookmarkRef = ref(db, `bookmarks/${user.uid}/${beach.name}`);
+    set(bookmarkRef, {
+      name: beach.name,
+      location: beach.location,
+      lat: beach.lat,
+      long: beach.long,
+      timestamp: Date.now()
+    })
+    .then(() => {
+      console.log("Bookmark saved successfully!");
+    })
+    .catch((error) => {
+      console.error("Error saving bookmark: ", error);
+    });
   };
 
   return (
@@ -56,7 +86,7 @@ const BeachDivs = ({ filter }) => {
           >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
-                src={getRandomImage()}  // Use the random image function
+                src={getRandomImage()}  
                 className="w-full h-full object-cover"
                 alt={`${beach.name}`}
               />
@@ -69,7 +99,7 @@ const BeachDivs = ({ filter }) => {
                 </div>
                 <button
                   className="text-emerald-500 hover:text-emerald-600 transition-colors duration-200"
-                  onClick={handleBookmarkClick}
+                  onClick={(e) => handleBookmarkClick(e, beach)}
                 >
                   <Bookmark size={24} />
                 </button>
