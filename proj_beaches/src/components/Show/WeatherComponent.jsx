@@ -54,7 +54,9 @@ const WeatherComponent = ({ lat, long }) => {
         const tempCelsius = data.hourly.temperature_2m[index];
         const waterTempCelsius = data.hourly.temperature_80m[index];
         const windSpeedKmh = data.hourly.wind_speed_10m[index];
-        const waveHeight = (windSpeedKmh ** 2) / 9.81; 
+        const windSpeedMs = windSpeedKmh / 3.6;
+        const waveHeight = 0.1 * windSpeedMs;
+        
         const humidity = data.hourly.relative_humidity_2m[index];
         const weatherCode = data.hourly.weather_code[index];
 
