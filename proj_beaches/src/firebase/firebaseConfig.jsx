@@ -12,6 +12,7 @@ const firebaseConfig = {
   databaseURL: "https://beach-auth-3b809-default-rtdb.asia-southeast1.firebasedatabase.app/"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);

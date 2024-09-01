@@ -1,10 +1,14 @@
-import React from 'react';
-import Navbar from '../Navbar';
-import Footer from '../Footer';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
+import { Calendar, Clock, MapPin } from "lucide-react";
+import { db } from "../../firebase/firebaseConfig";
+import { ref, onValue } from "firebase/database";
 
 function Events() {
-  const eventsData = [
+  const [eventsData, setEventsData] = useState([]);
+
+  const DemoData = [
     {
       id: 1,
       ngoName: "Street Cause",
@@ -23,7 +27,7 @@ function Events() {
       timeFrom: '09:00',
       timeTo: '17:00',
       date: '2023-08-20',
-      description: 'Tree plantation drive in the heart of the city. Let`s make Mumbai greener!'
+      description: 'Tree plantation drive in the heart of the city. Lets make Mumbai greener!'
     },
     {
       id: 3,
@@ -36,6 +40,31 @@ function Events() {
       description: 'River cleanup initiative. Help us restore the beauty of our waterways!'
     }
   ];
+  useEffect(() => {
+    const fetchEvents = () => {
+      const eventsRef = ref(db, "Events");
+      onValue(
+        eventsRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const eventsArray = Object.keys(data).map((key) => ({
+              id: key,
+              ...data[key], 
+            }));
+            setEventsData(eventsArray);
+          } else {
+            setEventsData([]);
+          }
+        },
+        {
+          onlyOnce: true,
+        }
+      );
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className="h-full flex flex-col bg-gray-100">
@@ -45,11 +74,55 @@ function Events() {
           Upcoming Events Organized by NGO's
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 mb-20 lg:grid-cols-3 gap-8">
-          {eventsData.map((event) => (
+          {eventsData.length > 0 ? (
+            eventsData.map((event) => (
+              <div
+                key={event.id}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out"
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <img
+                      className="h-12 w-12 rounded-full object-cover"
+                      src={event.logo}
+                      alt={`${event.ngoName} logo`}
+                    />
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      {event.ngoName}
+                    </h2>
+                  </div>
+                  <p className="text-gray-600 mb-4">{event.description}</p>
+                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span>{event.date}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <Clock className="h-4 w-4 mr-2" />
+                    <span>
+                      {event.timeFrom} - {event.timeTo}
+                    </span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-500">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    <span>{event.location}</span>
+                  </div>
+                </div>
+                <div className="px-6 py-4 bg-indigo-600">
+                  <button className="w-full bg-white text-indigo-600 font-semibold py-2 px-4 rounded-md hover:bg-indigo-100 transition-colors duration-300 ease-in-out">
+                    Join Event
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No events available</p>
+          )}
+      
+          {DemoData.map((event) => (
             <div key={event.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <img className="h-12 w-12 rounded-full object-cover" src={event.logo} alt={`${event.ngoName} logo`} />
+                  <img className="h-12 w-12 rounded-full object-cover" src={event.logo} />
                   <h2 className="text-xl font-semibold text-gray-800">{event.ngoName}</h2>
                 </div>
                 <p className="text-gray-600 mb-4">{event.description}</p>

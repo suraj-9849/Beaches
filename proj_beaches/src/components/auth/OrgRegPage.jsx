@@ -25,7 +25,7 @@ const OrgRegPage = () => {
       email,
       org_type: organizationType
     };
-
+    console.log(detailsObj);
     try {
       await push(ngoRef, detailsObj);
       const cred = await createUserWithEmailAndPassword(auth, email, password);
