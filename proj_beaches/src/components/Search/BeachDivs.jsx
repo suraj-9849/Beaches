@@ -40,6 +40,7 @@ const BeachDivs = ({ filter }) => {
             location: beach.state,
             lat: beach.latitude,
             long: beach.longitude,
+            id: beach.id,
           }));
           setBeaches(allBeaches);
         }
@@ -63,8 +64,8 @@ const BeachDivs = ({ filter }) => {
     beach.location.toLowerCase().includes(filter.toLowerCase())
   );
 
-  const handleClick = (name, location, lat, long) => {
-    navigate(`/beach/${name}`, { state: { location, lat, long, name } });
+  const handleClick = (name, location, lat, long,id) => {
+    navigate(`/beach/${name}`, { state: { location, lat, long, name,id } });
   };
 
   const handleBookmarkClick = (e, beach) => {
@@ -102,7 +103,7 @@ const BeachDivs = ({ filter }) => {
           <li
             key={index}
             className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-            onClick={() => handleClick(beach.name, beach.location, beach.lat, beach.long)}
+            onClick={() => handleClick(beach.name, beach.location, beach.lat, beach.long,beach.id)}
           >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
