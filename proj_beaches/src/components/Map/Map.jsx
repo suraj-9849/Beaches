@@ -20,7 +20,7 @@ const Map = () => {
   const [showInfo, setShowInfo] = useState(false);
   const [mapType, setMapType] = useState("roadmap");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredBeaches, setFilteredBeaches] = useState([]);
+  const [beaches, setBeaches] = useState([]);
   const mapRef = useRef(null);
   const navigate = useNavigate();
 
@@ -118,28 +118,26 @@ const Map = () => {
   };
 
   useEffect(() => {
-    const filtered = Object.entries(beachesData)
-      .flatMap(([state, beaches]) =>
-        Object.entries(beaches).map(([name, data]) => ({
-          name,
-          state,
-          ...data,
-        }))
-      )
-      .filter(
-        (beach) =>
-          beach.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          beach.location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    setFilteredBeaches(filtered);
+    const allBeaches = [];
+    Object.keys(beachesData).forEach(state => {
+      const stateBeaches = Object.keys(beachesData[state]);
+      stateBeaches.forEach(beach => {
+        allBeaches.push({ name: beach, location: state });
+      });
+    });
+    setBeaches(allBeaches);
   }, [searchQuery]);
+  const filteredBeaches = beaches.filter(beach =>
+    beach.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    beach.location.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <Navbar />
       <main className="flex-grow flex flex-col md:flex-row relative">
         <div
-          className="w-full md:w-3/4 h-[100vh] md:h-full relative"
+          className="w-full md:w-3/4 h-[65vh] md:h-full relative"
           ref={mapRef}
         >
           {selectedBeach && (
