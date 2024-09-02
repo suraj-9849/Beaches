@@ -1,4 +1,3 @@
-// src/components/BeachDivs.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient'; // Import Supabase client
@@ -10,6 +9,8 @@ import { auth, db } from '../../firebase/firebaseConfig';
 
 const BeachDivs = ({ filter }) => {
   const [beaches, setBeaches] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
