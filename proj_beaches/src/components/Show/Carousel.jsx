@@ -43,11 +43,32 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
         setRating(newRating);
     };
 
-    const handleReviewSubmit = () => {
-        console.log("Review Submitted:", newReview);
-        setReviewModalIsOpen(false);
-        setNewReview("");
+    const handleReviewSubmit = async () => {
+        try {
+            // Assuming you have a way to get the numeric rating value
+            const numericRating = parseFloat(rating).toFixed(1);
+    
+            // Insert the review into the database
+            const { error } = await supabase
+                .from('reviews')
+                .insert([
+                    {
+                        rating: numericRating,
+                        content: newReview,
+                        beach_id: beachId
+                    }
+                ]);
+    
+            if (error) throw error;
+    
+            console.log("Review Submitted:", newReview);
+            setReviewModalIsOpen(false);
+            setNewReview("");
+        } catch (err) {
+            console.error("Error submitting review:", err.message);
+        }
     };
+    
 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
