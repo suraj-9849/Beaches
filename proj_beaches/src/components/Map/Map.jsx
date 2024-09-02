@@ -10,6 +10,7 @@ import {
   Search,
 } from "lucide-react";
 import beachesData from "../locations.json";
+
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 

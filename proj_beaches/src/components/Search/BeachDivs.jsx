@@ -1,6 +1,7 @@
+// src/components/BeachDivs.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import beachData from '../locations.json';
+import { supabase } from '../../supabaseClient'; // Import Supabase client
 import imageData from './imageData.json'; 
 import { Bookmark } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -9,7 +10,6 @@ import { auth, db } from '../../firebase/firebaseConfig';
 
 const BeachDivs = ({ filter }) => {
   const [beaches, setBeaches] = useState([]);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,20 +21,35 @@ const BeachDivs = ({ filter }) => {
   }, []);
 
   useEffect(() => {
-    const allBeaches = [];
-    Object.keys(beachData).forEach(state => {
-      const stateBeaches = Object.keys(beachData[state]);
-      stateBeaches.forEach(beach => {
-        const { latitude, longitude } = beachData[state][beach] || {};
-        allBeaches.push({
-          name: beach,
-          location: state,
-          lat: latitude,
-          long: longitude
-        });
-      });
-    });
-    setBeaches(allBeaches);
+    // Function to fetch beaches data from Supabase
+    const fetchBeaches = async () => {
+      setLoading(true); // Start loading
+      try {
+        // Fetch data from Supabase table
+        const { data, error } = await supabase
+          .from('beaches') // Replace with your actual table name
+          .select('*');
+
+        if (error) {
+          console.error('Error fetching beaches:', error);
+        } else {
+          // Map the data to match the expected format
+          const allBeaches = data.map((beach) => ({
+            name: beach.beach_name, // Use the correct column names from your table
+            location: beach.state,
+            lat: beach.latitude,
+            long: beach.longitude,
+          }));
+          setBeaches(allBeaches);
+        }
+      } catch (error) {
+        console.error('Error fetching beaches:', error.message);
+      } finally {
+        setLoading(false); // End loading
+      }
+    };
+
+    fetchBeaches();
   }, []);
 
   const getRandomImage = () => {
@@ -42,7 +57,7 @@ const BeachDivs = ({ filter }) => {
     return imageData[randomIndex].url;
   };
 
-  const filteredBeaches = beaches.filter(beach =>
+  const filteredBeaches = beaches.filter((beach) =>
     beach.name.toLowerCase().includes(filter.toLowerCase()) ||
     beach.location.toLowerCase().includes(filter.toLowerCase())
   );
@@ -75,6 +90,10 @@ const BeachDivs = ({ filter }) => {
     });
   };
 
+  if (loading) {
+    return <p>Loading...</p>; // Display loading indicator
+  }
+
   return (
     <div className="flex-1 overflow-y-auto mb-20 bg-gradient-to-b from-blue-50 to-emerald-50">
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
@@ -86,7 +105,7 @@ const BeachDivs = ({ filter }) => {
           >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
-                src={getRandomImage()}  
+                src={getRandomImage()}  // Use the random image function
                 className="w-full h-full object-cover"
                 alt={`${beach.name}`}
               />
