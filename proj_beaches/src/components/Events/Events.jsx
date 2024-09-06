@@ -140,8 +140,8 @@ function Events() {
                 </div>
               </div>
               <div className="px-6 py-4 bg-indigo-600">
-                <button className="w-full bg-white text-indigo-600 font-semibold py-2 px-4 rounded-md hover:bg-indigo-100 transition-colors duration-300 ease-in-out">
-                  Join Event
+                <button className="w-full bg-white text-indigo-200 font-semibold py-2 px-4 rounded-md hover:bg-indigo-100 transition-colors duration-300 ease-in-out">
+                  Event Ended 
                 </button>
               </div>
             </div>
