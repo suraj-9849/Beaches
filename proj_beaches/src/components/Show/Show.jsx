@@ -9,7 +9,7 @@ import ShowReviews from './ShowReviews.jsx';
 const Show = () => {
   const location = useLocation();
   const { state } = location;
-  const { location: beachLocation, lat, long, name ,id} = state || {};
+  const { location: beachLocation, lat, long, name ,id, district } = state || {};
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -19,7 +19,7 @@ const Show = () => {
         <div className="relative z-10 container mx-auto px-4 py-12 mt-10 pb-32"> 
           {/* Beach Carousel Section */}
           <section className="mb-20">
-            <CarouselWithDetails beachLocation={beachLocation} lat={lat} long={long} name={name} beachId={id} />
+            <CarouselWithDetails beachLocation={beachLocation} lat={lat} long={long} name={name} beachId={id} district={district}/>
           </section>
 
           {/* Weather Component Section */}
@@ -27,7 +27,7 @@ const Show = () => {
             <h2 className="text-4xl font-bold text-white text-center mb-8 tracking-wide text-shadow-lg">
               Current Weather
             </h2>
-            <WeatherComponent beachLocation={beachLocation} lat={lat} long={long} name={name} id={id}/>
+            <WeatherComponent beachLocation={beachLocation} lat={lat} long={long} name={name} id={id} district={district}/>
           </section>
         </div>
 

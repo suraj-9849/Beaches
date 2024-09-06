@@ -41,6 +41,7 @@ const BeachDivs = ({ filter }) => {
             lat: beach.latitude,
             long: beach.longitude,
             id: beach.id,
+            district : beach.district
           }));
           setBeaches(allBeaches);
         }
@@ -64,8 +65,8 @@ const BeachDivs = ({ filter }) => {
     beach.location.toLowerCase().includes(filter.toLowerCase())
   );
 
-  const handleClick = (name, location, lat, long,id) => {
-    navigate(`/beach/${name}`, { state: { location, lat, long, name,id } });
+  const handleClick = (name, location, lat, long,id,district) => {
+    navigate(`/beach/${name}`, { state: { location, lat, long, name,id, district } });
   };
 
   const handleBookmarkClick = (e, beach) => {
