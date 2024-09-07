@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+  }
+  
+  .goog-te-gadget-icon {
+    display: none !important;
+  }
+  
+  .goog-te-balloon-frame {
+    display: none !important;
+  }
+
+  #goog-gt-tt, .goog-te-banner-frame, .goog-te-balloon-frame {
+    display: none !important;
+}
+
+.goog-te-menu-frame.skiptranslate {
+    display: none !important;
+}
+
+.VIpgJd-ZVi9od-ORHb{
+    display: none;
+}
+
+iframe{
+    display: none;
+}
