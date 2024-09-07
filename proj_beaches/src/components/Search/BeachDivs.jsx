@@ -4,8 +4,7 @@ import { supabase } from '../../supabaseClient'; // Import Supabase client
 import imageData from './imageData.json'; 
 import { Bookmark } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
-import { auth, db } from '../../firebase/firebaseConfig';
+import { auth } from '../../firebase/firebaseConfig';
 
 const BeachDivs = ({ filter }) => {
   const [beaches, setBeaches] = useState([]);
@@ -41,7 +40,7 @@ const BeachDivs = ({ filter }) => {
             lat: beach.latitude,
             long: beach.longitude,
             id: beach.id,
-            district: beach.district
+            district: beach.district,
           }));
           setBeaches(allBeaches);
         }
@@ -71,7 +70,7 @@ const BeachDivs = ({ filter }) => {
   };
   
 
-  const handleBookmarkClick = (e, beach) => {
+  const handleBookmarkClick = async (e, beach) => {
     e.stopPropagation();
 
     if (!user) {
@@ -79,20 +78,26 @@ const BeachDivs = ({ filter }) => {
       return;
     }
 
-    const bookmarkRef = ref(db, `bookmarks/${user.uid}/${beach.name}`);
-    set(bookmarkRef, {
-      name: beach.name,
-      location: beach.location,
-      lat: beach.lat,
-      long: beach.long,
-      timestamp: Date.now()
-    })
-    .then(() => {
-      console.log("Bookmark saved successfully!");
-    })
-    .catch((error) => {
-      console.error("Error saving bookmark: ", error);
-    });
+    try {
+      // Insert the bookmark data into Supabase
+      const { data, error } = await supabase
+        .from('bookmarks') // Your Supabase table name
+        .insert([
+          {
+            user_id: user.uid, // Firebase user ID
+            beach_id: beach.id, // Beach ID from the Supabase beaches table
+            created_at: new Date().toISOString(), // Add timestamp for the bookmark
+          },
+        ]);
+
+      if (error) {
+        console.error("Error saving bookmark:", error);
+      } else {
+        console.log("Bookmark saved successfully!", data);
+      }
+    } catch (error) {
+      console.error("Error in handleBookmarkClick:", error);
+    }
   };
 
   if (loading) {
@@ -106,7 +111,7 @@ const BeachDivs = ({ filter }) => {
           <li
             key={index}
             className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-            onClick={() => handleClick(beach.name, beach.location, beach.lat, beach.long,beach.id,beach.district)}
+            onClick={() => handleClick(beach.name, beach.location, beach.lat, beach.long, beach.id, beach.district)}
           >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
