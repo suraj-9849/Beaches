@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sun, Droplet, Wind, ChevronLeft, ChevronRight, CloudRain, Umbrella, ShieldCheck, Waves, AudioWaveform, Gauge } from 'lucide-react';
 import Descript from './Descript';
-import GraphComponent from './GraphComponent'; // Import the new Graph component
+import CheckTsunami from './CheckTsunami';
 
 const convertTemperature = (temp, toFahrenheit) => {
   return toFahrenheit ? (temp * 9/5) + 32 : temp;
@@ -30,11 +30,9 @@ const WeatherCard = ({ icon, title, value, unit }) => (
   </div>
 );
 
-const WeatherComponent = ({ lat, long, swellSurge, highWave, currentSpeed, tsunamiRating }) => {
-  const [weatherData, setWeatherData] = useState(null);
+const WeatherComponent = ({ lat, long, weatherData, setWeatherData, swellSurge, highWave, currentSpeed, forecastData, setForecastData }) => {
   const [tempUnit, setTempUnit] = useState('C');
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [forecastData, setForecastData] = useState([]);
   const fetchWeatherData = async () => {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,relative_humidity_2m,rain,showers,weather_code,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_direction_80m,wind_gusts_10m,temperature_80m`;
     
@@ -100,7 +98,7 @@ const WeatherComponent = ({ lat, long, swellSurge, highWave, currentSpeed, tsuna
   const safeScore = (formula*10).toFixed(2);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl  border border-white border-opacity-20">
+    <>
       <h2 className="text-4xl font-bold mb-8 text-center">Weather Dashboard</h2>
       
       <div className="mb-8 flex items-center justify-between">
@@ -140,40 +138,15 @@ const WeatherComponent = ({ lat, long, swellSurge, highWave, currentSpeed, tsuna
           value={weatherData.windSpeed.toFixed(1)}
           unit="m/s"
         />
-        {swellSurge && 
-        <WeatherCard
-        icon={<Waves className="w-12 h-12 text-blue-900"/>}
-        title="Swell Surge"
-        value={swellSurge}
-        unit={`m`}
-        />
-        }
-        {highWave&& 
-        <WeatherCard
-        icon={<AudioWaveform className="w-12 h-12 text-amber-400"/>}
-        title="High Wave"
-        value={highWave}
-        unit={`m`}
-        />
-        }
-        {currentSpeed&&
-        <WeatherCard
-        icon={<Gauge className="w-12 h-12 text-lime-500"/>}
-        title="Current Speed"
-        value={currentSpeed}
-        unit={`m/s`}
-        />
-        }
         
         
       </div>
       
+        
 
-      <GraphComponent forecastData={forecastData} /> {/* Use the new Graph component */}
+      
 
-      <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md mb-8">
-        <h4 className="text-md font-semibold mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
-      </div>
+      
 
       <button
         onClick={toggleTempUnit}
@@ -181,7 +154,7 @@ const WeatherComponent = ({ lat, long, swellSurge, highWave, currentSpeed, tsuna
       >
         Switch to °{tempUnit === 'C' ? 'F' : 'C'}
       </button>
-    </div>
+    </>
   );
 };
 

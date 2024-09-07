@@ -7,7 +7,9 @@ import Navbar from '../Navbar.jsx';
 import Footer from '../Footer.jsx';
 import ShowReviews from './ShowReviews.jsx';
 import WaveAlerts from './WaveAlerts.jsx';
+import GraphComponent from './GraphComponent'; // Import the new Graph component
 import CheckTsunami from './CheckTsunami.jsx';
+import Descript from './Descript.jsx';
 const Show = () => {
   const location = useLocation();
   const { state } = location;
@@ -20,6 +22,7 @@ const Show = () => {
   //highwave, swellsurge
   const [highWave, setHighWave] = useState(0);
   const [swellSurge, setSwellSurge] = useState(0);
+  const [weatherData, setWeatherData] = useState();
   const handleWaveDataUpdate = (highWave, swellSurge) => {
     if (highWave !== 'N/A') {
       setHighWave(highWave);
@@ -28,6 +31,7 @@ const Show = () => {
       setSwellSurge(swellSurge);
     }
   };
+  const [forecastData, setForecastData] = useState([]);
 
   return (
 
@@ -41,23 +45,24 @@ const Show = () => {
             <CarouselWithDetails beachLocation={beachLocation} lat={lat} long={long} name={name} beachId={id} district={district} />
           </section>
 
-          {/* Weather Component Section */}
-          <section>
-            <h2 className="text-4xl font-bold text-white text-center mb-8 tracking-wide text-shadow-lg">
-              Current Weather
-            </h2>
-          </section>
-            <WeatherComponent beachLocation={beachLocation} lat={lat} long={long} name={name} id={id} district={district} swellSurge={swellSurge} highWave={highWave} currentSpeed={currentSpeed} tsunamiRating={tsunamiRating}/>
-
-          {/* Alerts Section */}
-          <section>
+          
+          <div className="p-8 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl  border border-white border-opacity-20">
+            <WeatherComponent beachLocation={beachLocation} lat={lat} long={long} name={name} id={id} district={district} swellSurge={swellSurge} highWave={highWave} currentSpeed={currentSpeed} forecastData={forecastData} setForecastData={setForecastData} weatherData={weatherData} setWeatherData={setWeatherData}/>
+            <CheckTsunami lat={lat} lon={long} tsunamiRating={tsunamiRating} setTsunamiRating={setTsunamiRating} />
+            <section>
             <h2 className="text-4xl font-bold text-white text-center mb-8 tracking-wide text-shadow-lg">
 
             </h2>
             <Alerts district={district} currentSpeed={currentSpeed} setCurrentSpeed={setCurrentSpeed} />
             <WaveAlerts district={district} onWaveDataUpdate={handleWaveDataUpdate}/>
-            <CheckTsunami lat={lat} lon={long} tsunamiRating={tsunamiRating} setTsunamiRating={setTsunamiRating} />
           </section>
+            <GraphComponent forecastData={forecastData} /> {/* Use the new Graph component */}
+            <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md mb-8">
+              <h4 className="text-md font-semibold mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
+            </div>
+          </div>
+          {/* Alerts Section */}
+          
         </div>
 
         {/* SVG Wave Divider */}
