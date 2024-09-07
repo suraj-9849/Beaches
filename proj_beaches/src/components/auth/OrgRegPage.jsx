@@ -5,6 +5,7 @@ import Navbar from '../Navbar';
 import Footer from '../Footer';
 import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import { app } from '../../firebase/firebaseConfig';
+import { supabase } from '../../supabaseClient'; // Import Supabase client
 
 const OrgRegPage = () => {
   const [name, setName] = useState('');
@@ -23,17 +24,27 @@ const OrgRegPage = () => {
     const detailsObj = {
       name,
       email,
-      org_type: organizationType
+      org_type: organizationType,
     };
+
     console.log(detailsObj);
     try {
       await push(ngoRef, detailsObj);
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
-      navigate('/');
+
+      // Save user details to Supabase
+      const { data, error } = await supabase
+        .from('users')
+        .insert([
+          { email: cred.user.email, user_id: cred.user.uid, user_name: name }
+        ]);
+
+      if (error) throw error;
+
       navigate('/');
     } catch (error) {
-      setMessage('Error:' + error.message);
+      setMessage('Error: ' + error.message);
     }
   };
 
@@ -43,7 +54,6 @@ const OrgRegPage = () => {
       <div className="min-h-screen flex items-center justify-center p-3">
         <div className="relative max-w-md w-full p-1 rounded-md bg-gradient-to-b from-blue-300 via-green-200 to-yellow-200 ">
           <div className="relative bg-white rounded-lg shadow-lg p-8">
-           
             <h2 className="text-3xl font-bold text-center mb-6 text-blue-600">NGO Organization Sign-Up</h2>
             <form onSubmit={handleRegister} className="space-y-4">
               <div>

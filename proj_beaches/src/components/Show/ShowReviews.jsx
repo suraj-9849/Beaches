@@ -9,20 +9,21 @@ const ShowReviews = ({ beachId }) => {
     const fetchReviews = async () => {
         try {
             setLoading(true);
+            // Join the reviews table with the users table to get the username
             const { data, error } = await supabase
                 .from('reviews')
-                .select('rating, content')
+                .select('rating, content, user_id, users(user_name)')
                 .eq('beach_id', beachId);
 
             if (error) {
                 throw error;
             }
 
-            // Assign a static username to all reviews
+            // Assign profile pictures for each user (can be dynamic if you have user profile pictures)
             const reviewsWithUsernames = data.map(review => ({
                 ...review,
-                username: 'User', // Placeholder username
-                profilePicture: 'https://via.placeholder.com/40?text=U' // Dummy profile picture
+                username: review.users.user_name || 'Anonymous', // Get the username from the users table
+                profilePicture: 'https://via.placeholder.com/40?text=U' // Dummy profile picture, replace with actual if available
             }));
 
             setReviews(reviewsWithUsernames);

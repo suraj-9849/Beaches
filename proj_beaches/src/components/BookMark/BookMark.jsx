@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { ref, get, remove } from 'firebase/database';
-import { db } from '../../firebase/firebaseConfig';
+import { supabase } from '../../supabaseClient'; // Import Supabase client
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 import { Bookmark, Trash2, MapPin, Calendar } from 'lucide-react';
@@ -14,17 +13,43 @@ function BookMark() {
     const fetchBookmarks = async () => {
       const user = auth.currentUser;
       if (user) {
-        const bookmarkRef = ref(db, `bookmarks/${user.uid}`);
-        const snapshot = await get(bookmarkRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const bookmarkArray = Object.entries(data).map(([key, value]) => ({
-            id: key,
-            ...value
-          }));
-          setBookmarks(bookmarkArray);
-        } else {
-          setBookmarks([]);
+        try {
+          // Fetch the bookmarks for the logged-in user from Supabase
+          const { data: bookmarkData, error } = await supabase
+            .from('bookmarks') // Supabase 'bookmarks' table
+            .select('beach_id, created_at') // Fetch the beach_id and timestamp (created_at)
+            .eq('user_id', user.uid);
+
+          if (error) {
+            console.error('Error fetching bookmarks:', error);
+            return;
+          }
+
+          if (bookmarkData.length > 0) {
+            // For each bookmark, fetch the corresponding beach details from the 'beaches' table
+            const beachIds = bookmarkData.map((bookmark) => bookmark.beach_id);
+            const { data: beachData, error: beachError } = await supabase
+              .from('beaches')
+              .select('*')
+              .in('id', beachIds); // Use the `in` operator to fetch all relevant beaches
+
+            if (beachError) {
+              console.error('Error fetching beaches:', beachError);
+              return;
+            }
+
+            // Combine the beach data with the bookmark data
+            const combinedData = bookmarkData.map((bookmark) => ({
+              ...bookmark,
+              ...beachData.find((beach) => beach.id === bookmark.beach_id),
+            }));
+
+            setBookmarks(combinedData);
+          } else {
+            setBookmarks([]);
+          }
+        } catch (error) {
+          console.error('Error fetching bookmarks:', error);
         }
       }
     };
@@ -35,9 +60,24 @@ function BookMark() {
   const handleRemoveBookmark = async (bookmarkId) => {
     const user = auth.currentUser;
     if (user) {
-      const bookmarkRef = ref(db, `bookmarks/${user.uid}/${bookmarkId}`);
-      await remove(bookmarkRef);
-      setBookmarks(bookmarks.filter(bookmark => bookmark.id !== bookmarkId));
+      try {
+        // Delete the bookmark from the Supabase 'bookmarks' table
+        const { error } = await supabase
+          .from('bookmarks')
+          .delete()
+          .eq('user_id', user.uid)
+          .eq('beach_id', bookmarkId);
+
+        if (error) {
+          console.error('Error removing bookmark:', error);
+          return;
+        }
+
+        // Update the state after successful removal
+        setBookmarks(bookmarks.filter((bookmark) => bookmark.beach_id !== bookmarkId));
+      } catch (error) {
+        console.error('Error in handleRemoveBookmark:', error);
+      }
     }
   };
 
@@ -52,25 +92,28 @@ function BookMark() {
         {bookmarks.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {bookmarks.map((bookmark) => (
-              <div key={bookmark.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+              <div
+                key={bookmark.beach_id}
+                className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg"
+              >
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-2">{bookmark.name}</h2>
+                  <h2 className="text-xl font-semibold text-gray-800 mb-2">{bookmark.beach_name}</h2>
                   <p className="text-gray-600 mb-4 flex items-center">
                     <MapPin className="mr-2" size={16} />
-                    {bookmark.location}
+                    {bookmark.state}
                   </p>
                   <p className="text-gray-700 mb-2">
-                    <span className="font-semibold">Latitude:</span> {bookmark.lat}
+                    <span className="font-semibold">Latitude:</span> {bookmark.latitude}
                   </p>
                   <p className="text-gray-700 mb-4">
-                    <span className="font-semibold">Longitude:</span> {bookmark.long}
+                    <span className="font-semibold">Longitude:</span> {bookmark.longitude}
                   </p>
                   <p className="text-gray-600 text-sm flex items-center mb-4">
                     <Calendar className="mr-2" size={16} />
-                    Saved on: {new Date(bookmark.timestamp).toLocaleString()}
+                    Saved on: {new Date(bookmark.created_at).toLocaleString()}
                   </p>
                   <button
-                    onClick={() => handleRemoveBookmark(bookmark.id)}
+                    onClick={() => handleRemoveBookmark(bookmark.beach_id)}
                     className="text-red-600 hover:text-red-800 transition-colors duration-300"
                     aria-label="Remove bookmark"
                   >
