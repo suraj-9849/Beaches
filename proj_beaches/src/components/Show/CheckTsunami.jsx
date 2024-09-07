@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { AlertCircle, ShieldCheck, Info, Shield } from 'lucide-react';
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in km
+    const R = 6371; 
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -14,10 +14,10 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-const CheckTsunami = ({ lat, lon }) => {
-    const [status, setStatus] = useState('Loading...');
+const CheckTsunami = ({ lat, lon, tsunamiRating, setTsunamiRating }) => {
     const [error, setError] = useState(null);
     const [nearestDistance, setNearestDistance] = useState(null);
+    const [status, setStatus] = useState('Loading...');
 
     useEffect(() => {
         const fetchTsunamiData = async () => {
@@ -25,7 +25,7 @@ const CheckTsunami = ({ lat, lon }) => {
                 const response = await axios.get('https://thingproxy.freeboard.io/fetch/https://tsunami.incois.gov.in/itews/DSSProducts/OPR/past90days.json');
                 const data = response.data;
                 const tsunamis = data.datasets || [];
-                const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+                const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; 
                 const currentTime = Date.now();
                 let minDistance = Infinity;
 
@@ -45,12 +45,16 @@ const CheckTsunami = ({ lat, lon }) => {
                 setNearestDistance(minDistance);
                 if (minDistance < 10) {
                     setStatus('Unsafe: Tsunami threat detected within 10 km.');
+                    setTsunamiRating(4);
                 } else if (minDistance < 20) {
                     setStatus('Moderate: Tsunami detected within 20 km.');
+                    setTsunamiRating(3);
                 } else if (minDistance < 30) {
                     setStatus('Safe: Tsunami detected within 30 km.');
+                    setTsunamiRating(2);
                 } else if (minDistance > 100) {
                     setStatus('Highly Safe: No tsunami detected within 100 km.');
+                    setTsunamiRating(1);
                 }
             } catch (err) {
                 setError('Failed to fetch tsunami data');
