@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Sun, Droplet, Wind, Waves, ChevronLeft, ChevronRight, CloudRain, Umbrella, Thermometer } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { Sun, Droplet, Wind, ChevronLeft, ChevronRight, CloudRain, Umbrella } from 'lucide-react';
 import Descript from './Descript';
+import GraphComponent from './GraphComponent'; // Import the new Graph component
 
 const convertTemperature = (temp, toFahrenheit) => {
   return toFahrenheit ? (temp * 9/5) + 32 : temp;
@@ -55,7 +55,6 @@ const WeatherComponent = ({ lat, long }) => {
         const waterTempCelsius = data.hourly.temperature_80m[index];
         const windSpeedKmh = data.hourly.wind_speed_10m[index];
         const windSpeedMs = windSpeedKmh / 3.6;
-        const waveHeight = 0.1 * windSpeedMs;
         
         const humidity = data.hourly.relative_humidity_2m[index];
         const weatherCode = data.hourly.weather_code[index];
@@ -63,8 +62,7 @@ const WeatherComponent = ({ lat, long }) => {
         setWeatherData({
           airTemperature: convertTemperature(tempCelsius, tempUnit === 'F'),
           waterTemperature: convertTemperature(waterTempCelsius, tempUnit === 'F'),
-          windSpeed: windSpeedKmh / 3.6,
-          waveHeight,
+          windSpeed: windSpeedMs,
           humidity,
           weatherCode
         });
@@ -95,22 +93,6 @@ const WeatherComponent = ({ lat, long }) => {
     newDate.setDate(selectedDate.getDate() + (direction === 'next' ? 1 : -1));
     setSelectedDate(newDate);
   };
-
-  const memoizedForecastChart = useMemo(() => (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={forecastData}>
-        <XAxis dataKey="time" stroke="#fff" />
-        <YAxis yAxisId="left" stroke="#ffd700" />
-        <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-        <Tooltip 
-          contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '8px' }}
-          labelStyle={{ color: '#333' }}
-        />
-        <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#ffd700" strokeWidth={2} dot={false} />
-        <Line yAxisId="right" type="monotone" dataKey="humidity" stroke="#82ca9d" strokeWidth={2} dot={false} />
-      </LineChart>
-    </ResponsiveContainer>
-  ), [forecastData]);
 
   if (!weatherData) {
     return <div className="text-center text-lg text-white">Loading...</div>;
@@ -151,18 +133,10 @@ const WeatherComponent = ({ lat, long }) => {
           value={weatherData.windSpeed.toFixed(1)}
           unit="m/s"
         />
-        <WeatherCard 
-          icon={<Waves className="w-12 h-12 text-indigo-400" />}
-          title="Wave Height"
-          value={weatherData.waveHeight.toFixed(2)}
-          unit="m"
-        />
       </div>
+      
 
-      <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md shadow-lg mb-8">
-        <h4 className="text-2xl font-semibold mb-4">24-Hour Forecast</h4>
-        {memoizedForecastChart}
-      </div>
+      <GraphComponent forecastData={forecastData} /> {/* Use the new Graph component */}
 
       <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md mb-8">
         <h4 className="text-md font-semibold mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
