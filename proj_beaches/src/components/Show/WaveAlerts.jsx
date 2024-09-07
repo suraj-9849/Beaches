@@ -3,17 +3,13 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import 'tailwindcss/tailwind.css';
 
-// Function to extract high wave and swell surge from the message
 const extractWaveData = (message) => {
-    console.log('Extracting data from message:', message);  // Debug statement
   
-    // Extract high wave data
     const highWaveMatch = message.match(/High waves?\s*in\s*the\s*range\s*of\s*([\d.]+)\s*-\s*([\d.]+)\s*m/i);
     const highWave = highWaveMatch ? ((parseFloat(highWaveMatch[1]) + parseFloat(highWaveMatch[2])) / 2).toFixed(1) : 'N/A';
   
-    // Extract swell surge data
     const swellSurgeMatch = message.match(/Swell waves? in the range of \d+\.?\d* - \d+\.?\d* sec period with (\d+\.?\d*) - (\d+\.?\d*) m height/i);
-    console.log('Swell Surge Match:', swellSurgeMatch);  // Debug statement
+   
     const swellSurge = swellSurgeMatch ? parseFloat(swellSurgeMatch[1]) : 'N/A';
   
     return { highWave, swellSurge };
@@ -30,7 +26,7 @@ const WaveAlerts = ({ district, onWaveDataUpdate }) => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        console.log('Fetching wave alerts for district:', district);  // Debug statement
+      
 
         if (!district) {
           setError('District is not provided');
@@ -40,13 +36,11 @@ const WaveAlerts = ({ district, onWaveDataUpdate }) => {
         const response = await axios.get('https://sarat.incois.gov.in/incoismobileappdata/rest/incois/hwassalatestdata');
         const data = response.data;
 
-        // Parsing High Wave Alerts
         const highWaveAlerts = JSON.parse(data.HWAJson).filter(alert =>
           alert.District.toLowerCase() === district.toLowerCase()
         );
         setHighWaveAlerts(highWaveAlerts);
 
-        // Parsing Swell Surge Alerts
         const swellSurgeAlerts = JSON.parse(data.SSAJson).filter(alert =>
           alert.District.toLowerCase() === district.toLowerCase()
         );

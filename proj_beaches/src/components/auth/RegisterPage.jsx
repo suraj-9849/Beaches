@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import { app } from '../../firebase/firebaseConfig';
-import { supabase } from '../../supabaseClient'; // Import Supabase client
+import { supabase } from '../../supabaseClient'; 
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 
@@ -17,13 +17,11 @@ const RegisterPage = () => {
   const handleRegister = async (event) => {
     event.preventDefault();
     try {
-      // Register the user with Firebase
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
       
-      console.log('User registered successfully with Firebase:', cred.user);
+    
 
-      // Save user details to Supabase
       const { data, error } = await supabase
         .from('users')
         .insert([
@@ -36,7 +34,7 @@ const RegisterPage = () => {
         return;
       }
 
-      console.log('User data saved successfully to Supabase:', data);
+    
       navigate('/');
     } catch (error) {
       console.error('Registration Error:', error);

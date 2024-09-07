@@ -22,17 +22,11 @@ function CreateEvent() {
       const base64Logo = reader.result;
       const finalData = { ...data, logo: base64Logo };
       setFormData(finalData);
-      console.log(finalData);
+ 
   
       const eventsRef = ref(db, 'Events');
       
       push(eventsRef, finalData)
-        .then(() => {
-          console.log("Data saved successfully!");
-        })
-        .catch((error) => {
-          console.error("Error saving data:", error);
-        });
   
       setTimeout(() => {
         navigate("/events");

@@ -1,43 +1,42 @@
 import React, { useEffect, useRef, useState } from "react";
+import { supabase } from "../../supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Map as MapIcon,
-  Info,
-  X,
-  Layers,
-  Flag,
-  ChevronRight,
-  Search,
-} from "lucide-react";
-import beachesData from "../locations.json";
-
+import { Layers, X, Search } from "lucide-react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 
 const Map = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [selectedBeach, setSelectedBeach] = useState(null);
-  const [showInfo, setShowInfo] = useState(false);
   const [mapType, setMapType] = useState("roadmap");
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [beaches, setBeaches] = useState([]);
   const mapRef = useRef(null);
+  const mapInstance = useRef(null);
   const navigate = useNavigate();
 
+  const handleClick = (name, location, lat, long, id, district) => {
+    console.log('Navigating to Show with:', { location, lat, long, name, id, district });
+    navigate(`/beach/${name}`, { state: { location, lat, long, name, id, district } });
+  };
+
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA64PDhaCen3VO7FVfFzwNfUQrkdWnqlpI&libraries=geometry,places&v=weekly`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => setMapLoaded(true);
-    document.head.appendChild(script);
-  }, []);
+    if (!mapLoaded) {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA64PDhaCen3VO7FVfFzwNfUQrkdWnqlpI&libraries=geometry,places&v=weekly`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setMapLoaded(true);
+      document.head.appendChild(script);
+    }
+  }, [mapLoaded]);
 
   useEffect(() => {
     if (!mapLoaded) return;
 
     const initMap = () => {
-      const map = new window.google.maps.Map(mapRef.current, {
+      mapInstance.current = new window.google.maps.Map(mapRef.current, {
         center: { lat: 20.5937, lng: 78.9629 },
         zoom: 4.5,
         mapTypeId: mapType,
@@ -52,64 +51,77 @@ const Map = () => {
             elementType: "geometry",
             stylers: [{ color: "#f0f0f0" }],
           },
-          {
-            featureType: "poi",
-            stylers: [{ visibility: "off" }],
-          },
-          {
-            featureType: "road",
-            stylers: [{ visibility: "off" }],
-          },
         ],
         disableDefaultUI: true,
         gestureHandling: "greedy",
       });
-
-      Object.keys(beachesData).forEach((state) => {
-        const beaches = beachesData[state];
-        Object.keys(beaches).forEach((beachName) => {
-          const beach = beaches[beachName];
-          const marker = new window.google.maps.Marker({
-            position: { lat: beach.latitude, lng: beach.longitude },
-            map,
-            title: beachName,
-            icon: {
-              path: "M4 24h-2v-24h2v24zm18-21.387s-1.621 1.43-3.754 1.43c-3.36 0-3.436-2.895-7.337-2.895-2.108 0-4.075.98-4.909 1.694v12.085c1.26-.819 2.862-1.374 4.464-1.374 3.900 0 3.57 2.995 7.337 2.995 2.133 0 3.754-1.385 3.754-1.385v-12.55z",
-              fillColor: "#4CAF50",
-              fillOpacity: 0.9,
-              strokeWeight: 2,
-              strokeColor: "#FFFFFF",
-              scale: 1,
-              anchor: new google.maps.Point(12, 24),
-            },
-          });
-
-          marker.addListener("click", () => {
-            setSelectedBeach({ name: beachName, ...beach });
-            animateToBeach(map, beach);
-          });
-        });
-      });
+      loadBeachesData();
     };
 
     initMap();
-  }, [mapLoaded, navigate, mapType]);
+  }, [mapLoaded, mapType]);
 
-  const animateToBeach = (map, beach) => {
-    const targetPosition = new google.maps.LatLng(
-      beach.latitude,
-      beach.longitude
-    );
-    map.panTo(targetPosition);
-    map.setZoom(14);
+  const loadBeachesData = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from("beaches").select("*");
+      if (error) {
+        console.error("Error fetching beaches:", error);
+      } else {
+        const allBeaches = data.map((beach) => ({
+          name: beach.beach_name,
+          location: beach.state,
+          lat: Number(beach.latitude),
+          long: Number(beach.longitude),
+          id: beach.id,
+          district: beach.district,
+        }));
+        setBeaches(allBeaches);
+        addMarkers(allBeaches);
+      }
+    } catch (error) {
+      console.error("Error fetching beaches:", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  function handleGoToShow() {
-    if (selectedBeach) {
-      const { name, latitude: lat, longitude: long, location } = selectedBeach;
-      navigate(`/beach/${name}`, { state: { location, lat, long, name } });
-    }
-  }
+  const addMarkers = (beaches) => {
+    beaches.forEach((beach) => {
+      const lat = Number(beach.lat);
+      const long = Number(beach.long);
+
+      if (!isNaN(lat) && !isNaN(long)) {
+        const marker = new window.google.maps.Marker({
+          position: { lat, lng: long },
+          map: mapInstance.current,
+          title: beach.name,
+          icon: {
+            path: "M4 24h-2v-24h2v24zm18-21.387s-1.621 1.43-3.754 1.43c-3.36 0-3.436-2.895-7.337-2.895-2.108 0-4.075.98-4.909 1.694v12.085c1.26-.819 2.862-1.374 4.464-1.374 3.9 0 3.57 2.995 7.337 2.995 2.133 0 3.754-1.385 3.754-1.385v-12.55z",
+            fillColor: "#4CAF50",
+            fillOpacity: 0.9,
+            strokeWeight: 2,
+            strokeColor: "#FFFFFF",
+            scale: 1,
+            anchor: new window.google.maps.Point(12, 24),
+          },
+        });
+
+        marker.addListener("click", () => {
+          setSelectedBeach(beach);
+          animateToBeach(beach);
+        });
+      } else {
+        console.warn("Invalid lat/long for beach:", beach);
+      }
+    });
+  };
+
+  const animateToBeach = (beach) => {
+    const targetPosition = new google.maps.LatLng(beach.lat, beach.long);
+    mapInstance.current.panTo(targetPosition);
+    mapInstance.current.setZoom(14);
+  };
 
   const toggleMapType = () => {
     setMapType((prevType) =>
@@ -117,19 +129,10 @@ const Map = () => {
     );
   };
 
-  useEffect(() => {
-    const allBeaches = [];
-    Object.keys(beachesData).forEach(state => {
-      const stateBeaches = Object.keys(beachesData[state]);
-      stateBeaches.forEach(beach => {
-        allBeaches.push({ name: beach, location: state });
-      });
-    });
-    setBeaches(allBeaches);
-  }, [searchQuery]);
-  const filteredBeaches = beaches.filter(beach =>
-    beach.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    beach.location.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBeaches = beaches.filter(
+    (beach) =>
+      beach.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      beach.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -156,12 +159,21 @@ const Map = () => {
               <p className="text-gray-600 mb-4">
                 <strong>Location:</strong> {selectedBeach.location}
               </p>
-              <Link
-                onClick={handleGoToShow}
-                className="  bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold w-full text-center"
+              <div
+                onClick={() =>
+                  handleClick(
+                    selectedBeach.name,
+                    selectedBeach.location,
+                    selectedBeach.lat,
+                    selectedBeach.long,
+                    selectedBeach.id,
+                    selectedBeach.district
+                  )
+                }
+                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold w-full text-center"
               >
                 View Details
-              </Link>
+              </div>
             </div>
           )}
         </div>
@@ -188,7 +200,7 @@ const Map = () => {
                 className="bg-gray-100 p-4 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
                 onClick={() => {
                   setSelectedBeach(beach);
-                  animateToBeach(mapRef.current, beach);
+                  animateToBeach(beach);
                 }}
               >
                 <h4 className="text-lg font-semibold text-blue-800">
@@ -205,7 +217,7 @@ const Map = () => {
           onClick={toggleMapType}
           className="bg-white p-3 rounded-full shadow-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
         >
-          <Layers size={24} className="text-blue-500" />
+          <Layers size={24} className="text-blue-800" />
         </button>
       </div>
       <Footer />

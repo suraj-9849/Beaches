@@ -10,8 +10,7 @@ const GoogleTranslate = () => {
 
     script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
     script.async = true;
-    script.onload = () => console.log('Google Translate script loaded');
-    script.onerror = () => console.error('Error loading Google Translate script');
+   
     document.body.appendChild(script);
 const googleLogo = document.querySelector('img[src="https://www.gstatic.com/images/branding/googlelogo/1x/googlelogo_color_68x28dp.png"]');
     
@@ -19,11 +18,9 @@ const googleLogo = document.querySelector('img[src="https://www.gstatic.com/imag
       const parentElement = googleLogo.parentElement;
       
       parentElement.remove();
-    } else {
-      console.log('Google logo image not found');
     }   
     window.googleTranslateElementInit = () => {
-      console.log('Google Translate initialization');
+     
       setIsTranslateReady(true);
     };
 

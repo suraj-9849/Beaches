@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { supabase } from '../../supabaseClient'; // Import Supabase client
+import { supabase } from '../../supabaseClient';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 import { Bookmark, Trash2, MapPin, Calendar } from 'lucide-react';
@@ -14,10 +14,10 @@ function BookMark() {
       const user = auth.currentUser;
       if (user) {
         try {
-          // Fetch the bookmarks for the logged-in user from Supabase
+        
           const { data: bookmarkData, error } = await supabase
-            .from('bookmarks') // Supabase 'bookmarks' table
-            .select('beach_id, created_at') // Fetch the beach_id and timestamp (created_at)
+            .from('bookmarks') 
+            .select('beach_id, created_at') 
             .eq('user_id', user.uid);
 
           if (error) {
@@ -26,19 +26,19 @@ function BookMark() {
           }
 
           if (bookmarkData.length > 0) {
-            // For each bookmark, fetch the corresponding beach details from the 'beaches' table
+          
             const beachIds = bookmarkData.map((bookmark) => bookmark.beach_id);
             const { data: beachData, error: beachError } = await supabase
               .from('beaches')
               .select('*')
-              .in('id', beachIds); // Use the `in` operator to fetch all relevant beaches
+              .in('id', beachIds);
 
             if (beachError) {
               console.error('Error fetching beaches:', beachError);
               return;
             }
 
-            // Combine the beach data with the bookmark data
+          
             const combinedData = bookmarkData.map((bookmark) => ({
               ...bookmark,
               ...beachData.find((beach) => beach.id === bookmark.beach_id),
@@ -61,7 +61,7 @@ function BookMark() {
     const user = auth.currentUser;
     if (user) {
       try {
-        // Delete the bookmark from the Supabase 'bookmarks' table
+    
         const { error } = await supabase
           .from('bookmarks')
           .delete()
@@ -73,7 +73,7 @@ function BookMark() {
           return;
         }
 
-        // Update the state after successful removal
+        
         setBookmarks(bookmarks.filter((bookmark) => bookmark.beach_id !== bookmarkId));
       } catch (error) {
         console.error('Error in handleRemoveBookmark:', error);

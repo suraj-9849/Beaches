@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../supabaseClient'; // Import Supabase client
+import { supabase } from '../../supabaseClient'; 
 import imageData from './imageData.json'; 
 import { Bookmark } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -8,7 +8,7 @@ import { auth } from '../../firebase/firebaseConfig';
 
 const BeachDivs = ({ filter }) => {
   const [beaches, setBeaches] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -21,21 +21,21 @@ const BeachDivs = ({ filter }) => {
   }, []);
 
   useEffect(() => {
-    // Function to fetch beaches data from Supabase
+   
     const fetchBeaches = async () => {
-      setLoading(true); // Start loading
+      setLoading(true); 
       try {
-        // Fetch data from Supabase table
+       
         const { data, error } = await supabase
-          .from('beaches') // Replace with your actual table name
+          .from('beaches') 
           .select('*');
 
         if (error) {
           console.error('Error fetching beaches:', error);
         } else {
-          // Map the data to match the expected format
+         
           const allBeaches = data.map((beach) => ({
-            name: beach.beach_name, // Use the correct column names from your table
+            name: beach.beach_name, 
             location: beach.state,
             lat: beach.latitude,
             long: beach.longitude,
@@ -47,7 +47,7 @@ const BeachDivs = ({ filter }) => {
       } catch (error) {
         console.error('Error fetching beaches:', error.message);
       } finally {
-        setLoading(false); // End loading
+        setLoading(false);
       }
     };
 
@@ -65,7 +65,7 @@ const BeachDivs = ({ filter }) => {
   );
 
   const handleClick = (name, location, lat, long, id, district) => {
-    console.log('Navigating to Show with:', { location, lat, long, name, id, district });
+   
     navigate(`/beach/${name}`, { state: { location, lat, long, name, id, district } });
   };
   
@@ -79,29 +79,25 @@ const BeachDivs = ({ filter }) => {
     }
 
     try {
-      // Insert the bookmark data into Supabase
+    
       const { data, error } = await supabase
-        .from('bookmarks') // Your Supabase table name
+        .from('bookmarks') 
         .insert([
           {
-            user_id: user.uid, // Firebase user ID
-            beach_id: beach.id, // Beach ID from the Supabase beaches table
-            created_at: new Date().toISOString(), // Add timestamp for the bookmark
+            user_id: user.uid, 
+            beach_id: beach.id, 
+            created_at: new Date().toISOString(), 
           },
         ]);
 
-      if (error) {
-        console.error("Error saving bookmark:", error);
-      } else {
-        console.log("Bookmark saved successfully!", data);
-      }
+      
     } catch (error) {
-      console.error("Error in handleBookmarkClick:", error);
+    
     }
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Display loading indicator
+    return <p>Loading...</p>;
   }
 
   return (
@@ -115,7 +111,7 @@ const BeachDivs = ({ filter }) => {
           >
             <div className="h-48 bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center justify-center overflow-hidden">
               <img
-                src={getRandomImage()}  // Use the random image function
+                src={getRandomImage()}   
                 className="w-full h-full object-cover"
                 alt={`${beach.name}`}
               />

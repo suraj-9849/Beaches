@@ -12,33 +12,21 @@ async function fetchAndProcessData() {
 
         if (hwassaRawData.LatestHWADate !== "None") {
             threatData = threatData.concat(hwassaData);
-        } else {
-            console.log("No HWASSA data available.");
         }
-
         if (hwassaRawData.LatestHWADate !== "None") {
             threatData = threatData.concat(SSAData);
-        } else {
-            console.log("No SSA data available.");
-        }
+        } 
 
         if (currentsRawData.LatestCurrentsDate !== "None") {
             threatData = threatData.concat(currentsData);
-        } else {
-            console.log("No currents data available.");
-        }
+        } 
 
         return { threatData };
 
     } catch (error) {
-        console.error('Error fetching data:', error);
+    
     }
 }
 
 fetchAndProcessData()
-    .then(data => {
-        console.log('Processed Data:', data);
-    })
-    .catch(error => {
-        console.error('Error processing data:', error);
-    });
+   

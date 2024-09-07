@@ -5,7 +5,7 @@ import Navbar from '../Navbar';
 import Footer from '../Footer';
 import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import { app } from '../../firebase/firebaseConfig';
-import { supabase } from '../../supabaseClient'; // Import Supabase client
+import { supabase } from '../../supabaseClient';
 
 const OrgRegPage = () => {
   const [name, setName] = useState('');
@@ -27,13 +27,11 @@ const OrgRegPage = () => {
       org_type: organizationType,
     };
 
-    console.log(detailsObj);
     try {
       await push(ngoRef, detailsObj);
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
 
-      // Save user details to Supabase
       const { data, error } = await supabase
         .from('users')
         .insert([

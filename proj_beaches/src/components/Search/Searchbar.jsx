@@ -16,7 +16,7 @@ const Searchbar = ({ input, setInput }) => {
         recognitionRef.current.removeEventListener('end', handleEnd);
         recognitionRef.current.removeEventListener('start', handleStart);
         recognitionRef.current.removeEventListener('error', handleError);
-        recognitionRef.current.stop(); // Stop recognition on component unmount
+        recognitionRef.current.stop(); 
       }
     };
   }, [setInput]);
@@ -27,17 +27,17 @@ const Searchbar = ({ input, setInput }) => {
       .map(result => result.transcript)
       .join('');
     setInput(transcript);
-    console.log('Transcript:', transcript);
+   
   };
 
   const handleEnd = () => {
     setIsListening(false);
-    console.log('Speech recognition ended.');
+
   };
 
   const handleStart = () => {
     setIsListening(true);
-    console.log('Speech recognition started.');
+
   };
 
   const handleError = (e) => {
@@ -52,7 +52,7 @@ const Searchbar = ({ input, setInput }) => {
   const startListening = () => {
     const recognition = recognitionRef.current;
     if (recognition) {
-      recognition.start(); // Start recognition after attaching listeners
+      recognition.start(); 
     }
   };
 
@@ -82,7 +82,6 @@ const Searchbar = ({ input, setInput }) => {
             `} />
           </button>
           <button
-            onClick={() => console.log('Search initiated with input:', input)}
             className="px-6 py-3 bg-gradient-to-r from-blue-400 via-teal-400 to-emerald-400 text-white font-semibold rounded-r-lg transition-all duration-300 hover:from-blue-500 hover:via-teal-500 hover:to-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Search

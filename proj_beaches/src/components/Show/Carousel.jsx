@@ -5,8 +5,8 @@ import Modal from 'react-modal';
 import { Sun, Camera, Edit3, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { supabase } from '../../supabaseClient';  // Ensure this is correctly imported
-import { getAuth, onAuthStateChanged } from 'firebase/auth';  // Firebase imports
+import { supabase } from '../../supabaseClient'; 
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
 
 Modal.setAppElement('#root');
 
@@ -21,18 +21,17 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
     const [isUploading, setIsUploading] = useState(false);
     const [user, setUser] = useState(null);
 
-    // Firebase authentication setup
     const auth = getAuth();
     
     useEffect(() => {
-        // Listen for auth state changes
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
         });
         return () => unsubscribe();
     }, [auth]);
 
-    // Function to fetch images for the specific beach ID
+ 
     const fetchImages = async () => {
         try {
             const { data, error } = await supabase
@@ -42,7 +41,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
 
             if (error) throw error;
 
-            // Update the state with fetched images
+   
             setCarouselImages(data.map((photo) => photo.image_url));
         } catch (err) {
             console.error("Error fetching images:", err.message);
@@ -50,7 +49,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
     };
 
     useEffect(() => {
-        fetchImages(); // Fetch images when component mounts or beachId changes
+        fetchImages();
     }, [beachId]);
 
     const handleRating = (newRating) => {
@@ -59,7 +58,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
 
     const handleReviewSubmit = async () => {
         if (!user) {
-            setLoginModalIsOpen(true); // Open the login modal if the user is not logged in
+            setLoginModalIsOpen(true);
             return;
         }
 
@@ -72,13 +71,13 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
                         rating: numericRating,
                         content: newReview,
                         beach_id: beachId,
-                        user_id: user.uid // Include user_id from Firebase
+                        user_id: user.uid
                     }
                 ]);
 
             if (error) throw error;
 
-            console.log("Review Submitted:", newReview);
+          
             setReviewModalIsOpen(false);
             setNewReview("");
         } catch (err) {
@@ -95,7 +94,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
 
     const handlePhotoUpload = async () => {
         if (!user) {
-            setLoginModalIsOpen(true); // Show login modal if user is not logged in
+            setLoginModalIsOpen(true);
             return;
         }
         
@@ -144,10 +143,8 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
             setIsUploading(false);
         }
     };
-
-    // Function to navigate to custom login route
     const navigateToLogin = () => {
-        window.location.href = '/login'; // Redirect to custom login route
+        window.location.href = '/login'; 
     };
 
     const PrevArrow = (props) => {
@@ -236,7 +233,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
                 </button>
             </div>
 
-            {/* Review Modal */}
+    
             <Modal isOpen={reviewModalIsOpen} onRequestClose={() => setReviewModalIsOpen(false)} style={modalStyles}>
                 <h2 className="text-2xl font-semibold mb-4">Post a Review</h2>
                 <div className="mb-4">
@@ -259,7 +256,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
                 </div>
             </Modal>
 
-            {/* Photo Modal */}
+        
             <Modal isOpen={photoModalIsOpen} onRequestClose={() => setPhotoModalIsOpen(false)} style={modalStyles}>
                 <h2 className="text-2xl font-semibold mb-4">Post a Photo</h2>
                 <input
@@ -279,7 +276,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
                 </div>
             </Modal>
 
-            {/* Login Modal */}
+        
             <Modal isOpen={loginModalIsOpen} onRequestClose={() => setLoginModalIsOpen(false)} style={modalStyles}>
                 <h2 className="text-2xl font-semibold mb-4">Login Required</h2>
                 <p>Please log in to post a photo.</p>

@@ -2,24 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import CarouselWithDetails from './Carousel.jsx';
 import WeatherComponent from './WeatherComponent.jsx';
-import Alerts from './Alerts.jsx'; // Import the Alerts component
+import Alerts from './Alerts.jsx'; 
 import Navbar from '../Navbar.jsx';
 import Footer from '../Footer.jsx';
 import ShowReviews from './ShowReviews.jsx';
 import WaveAlerts from './WaveAlerts.jsx';
-import GraphComponent from './GraphComponent'; // Import the new Graph component
+import GraphComponent from './GraphComponent'; 
 import CheckTsunami from './CheckTsunami.jsx';
 import Descript from './Descript.jsx';
 const Show = () => {
   const location = useLocation();
   const { state } = location;
   const { location: beachLocation, lat, long, name, id, district } = state || {};
-  console.log('District value:', district);
-  //check tsunami (4-bad, 3-moderate, 2-low risk 1-very good)
+
+  
   const [tsunamiRating, setTsunamiRating] = useState(0);
-  //wave current speed
+
   const [currentSpeed, setCurrentSpeed] = useState(0);
-  //highwave, swellsurge
+
   const [highWave, setHighWave] = useState(0);
   const [swellSurge, setSwellSurge] = useState(0);
   const [weatherData, setWeatherData] = useState();
