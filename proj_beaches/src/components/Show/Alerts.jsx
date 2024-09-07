@@ -13,7 +13,6 @@ const extractCurrentSpeed = (message) => {
   console.warn('Current speed regex did not match:', message); // Debug log
   return 'N/A';
 };
-
 const Alerts = ({ district }) => {
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState(null);
