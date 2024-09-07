@@ -22,7 +22,7 @@ const extractWaveData = (message) => {
   
   
   
-const WaveAlerts = ({ district }) => {
+const WaveAlerts = ({ district, onWaveDataUpdate }) => {
   const [highWaveAlerts, setHighWaveAlerts] = useState([]);
   const [swellSurgeAlerts, setSwellSurgeAlerts] = useState([]);
   const [error, setError] = useState(null);
@@ -59,7 +59,7 @@ const WaveAlerts = ({ district }) => {
     };
 
     fetchAlerts();
-  }, [district]);
+  }, [district, onWaveDataUpdate]);
 
   return (
     <div className="p-6 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl border border-white border-opacity-20">
@@ -75,6 +75,7 @@ const WaveAlerts = ({ district }) => {
               <h3 className="text-2xl font-semibold mb-4">High Wave Alerts</h3>
               {highWaveAlerts.map(alert => {
                 const { highWave, swellSurge } = extractWaveData(alert.Message);
+                onWaveDataUpdate(highWave, swellSurge);
 
                 return (
                   <div key={alert.OBJECTID} className="bg-white p-4 rounded-lg shadow-md">
@@ -98,7 +99,7 @@ const WaveAlerts = ({ district }) => {
               <h3 className="text-2xl font-semibold mb-4">Swell Surge Alerts</h3>
               {swellSurgeAlerts.map(alert => {
                 const { highWave, swellSurge } = extractWaveData(alert.Message);
-
+                onWaveDataUpdate(highWave, swellSurge);
                 return (
                   <div key={alert.OBJECTID} className="bg-white p-4 rounded-lg shadow-md">
                     <div className="flex items-center mb-4">

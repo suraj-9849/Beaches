@@ -13,7 +13,7 @@ const extractCurrentSpeed = (message) => {
   console.warn('Current speed regex did not match:', message); // Debug log
   return 'N/A';
 };
-const Alerts = ({ district }) => {
+const Alerts = ({ district, currentSpeed, setCurrentSpeed }) => {
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState(null);
 
@@ -64,7 +64,7 @@ const Alerts = ({ district }) => {
         <div className="space-y-6">
             <h3 className="text-2xl font-semibold mb-4">Ocean Current Alerts</h3>
           {alerts.map(alert => {
-            const currentSpeed = extractCurrentSpeed(alert.Message);
+            setCurrentSpeed(extractCurrentSpeed(alert.Message));
 
             console.log('Alert Message:', alert.Message); // Debug log
             console.log('Extracted Current Speed:', currentSpeed); // Debug log

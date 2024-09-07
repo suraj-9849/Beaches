@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import CarouselWithDetails from './Carousel.jsx';
 import WeatherComponent from './WeatherComponent.jsx';
@@ -13,7 +13,21 @@ const Show = () => {
   const { state } = location;
   const { location: beachLocation, lat, long, name, id, district } = state || {};
   console.log('District value:', district);
-
+  //check tsunami (4-bad, 3-moderate, 2-low risk 1-very good)
+  const [tsunamiRating, setTsunamiRating] = useState(0);
+  //wave current speed
+  const [currentSpeed, setCurrentSpeed] = useState(0);
+  //highwave, swellsurge
+  const [highWave, setHighWave] = useState(0);
+  const [swellSurge, setSwellSurge] = useState(0);
+  const handleWaveDataUpdate = (highWave, swellSurge) => {
+    if (highWave !== 'N/A') {
+      setHighWave(highWave);
+    }
+    if (swellSurge !== 'N/A') {
+      setSwellSurge(swellSurge);
+    }
+  };
 
   return (
 
@@ -32,17 +46,17 @@ const Show = () => {
             <h2 className="text-4xl font-bold text-white text-center mb-8 tracking-wide text-shadow-lg">
               Current Weather
             </h2>
-            <WeatherComponent beachLocation={beachLocation} lat={lat} long={long} name={name} id={id} district={district} />
           </section>
+            <WeatherComponent beachLocation={beachLocation} lat={lat} long={long} name={name} id={id} district={district} swellSurge={swellSurge} highWave={highWave} currentSpeed={currentSpeed} tsunamiRating={tsunamiRating}/>
 
           {/* Alerts Section */}
           <section>
             <h2 className="text-4xl font-bold text-white text-center mb-8 tracking-wide text-shadow-lg">
 
             </h2>
-            <Alerts district={district} />
-            <WaveAlerts district={district} />
-            <CheckTsunami lat={lat} lon={long} />
+            <Alerts district={district} currentSpeed={currentSpeed} setCurrentSpeed={setCurrentSpeed} />
+            <WaveAlerts district={district} onWaveDataUpdate={handleWaveDataUpdate}/>
+            <CheckTsunami lat={lat} lon={long} tsunamiRating={tsunamiRating} setTsunamiRating={setTsunamiRating} />
           </section>
         </div>
 
