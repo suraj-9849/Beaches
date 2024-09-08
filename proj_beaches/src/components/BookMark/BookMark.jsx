@@ -90,22 +90,22 @@ function BookMark() {
           const beach = beachData.find((b) => b.id === bookmark.beach_id);
           const districtLower = beach.district.toLowerCase();
 
-          const hw_message = extractAdvice(highwaveMap[districtLower] || 'No alert');
-          const ss_message = extractAdvice(swellsurgeMap[districtLower] || 'No alert');
-          const oc_message = extractAdvice(oceancurrentMap[districtLower] || 'No alert');
+          const fullHwMessage = highwaveMap[districtLower] || 'No alert';
+          const fullSsMessage = swellsurgeMap[districtLower] || 'No alert';
+          const fullOcMessage = oceancurrentMap[districtLower] || 'No alert';
 
           await supabase
             .from('bookmarks')
-            .update({ hw_message, ss_message, oc_message })
+            .update({ hw_message: fullHwMessage, ss_message: fullSsMessage, oc_message: fullOcMessage })
             .eq('user_id', userId)
             .eq('beach_id', bookmark.beach_id);
 
           return {
             ...bookmark,
             ...beach,
-            hw_message,
-            ss_message,
-            oc_message,
+            hw_message: fullHwMessage,
+            ss_message: fullSsMessage,
+            oc_message: fullOcMessage,
           };
         }));
 
@@ -203,13 +203,13 @@ function BookMark() {
                     </button>
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
-                    High Wave Alert: {bookmark.hw_message}
+                    High Wave Alert: {extractAdvice(bookmark.hw_message)}
                   </p>
                   <p className="mt-2 text-sm text-gray-500">
-                    Swell Surge Alert: {bookmark.ss_message}
+                    Swell Surge Alert: {extractAdvice(bookmark.ss_message)}
                   </p>
                   <p className="mt-2 text-sm text-gray-500">
-                    Ocean Current Alert: {bookmark.oc_message}
+                    Ocean Current Alert: {extractAdvice(bookmark.oc_message)}
                   </p>
                 </div>
               </li>
