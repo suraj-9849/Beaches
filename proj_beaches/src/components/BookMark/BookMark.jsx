@@ -41,9 +41,10 @@ function BookMark() {
 
       if (bookmarkData.length > 0) {
         const beachIds = bookmarkData.map((bookmark) => bookmark.beach_id);
+
         const { data: beachData, error: beachError } = await supabase
           .from('beaches')
-          .select('id, beach_name, state')
+          .select('id, beach_name, state, district')
           .in('id', beachIds);
 
         if (beachError) {
@@ -51,12 +52,64 @@ function BookMark() {
           return;
         }
 
-        const combinedData = bookmarkData.map((bookmark) => ({
-          ...bookmark,
-          ...beachData.find((beach) => beach.id === bookmark.beach_id),
+        const districts = beachData.map((beach) => beach.district.toLowerCase());
+
+        const { data: highwaveData, error: highwaveError } = await supabase
+          .from('highwave')
+          .select('district, hw_message');
+
+        const { data: swellsurgeData, error: swellsurgeError } = await supabase
+          .from('swellsurge')
+          .select('district, ss_message');
+
+        const { data: oceancurrentData, error: oceancurrentError } = await supabase
+          .from('oceancurrent')
+          .select('district, oc_message');
+
+        if (highwaveError || swellsurgeError || oceancurrentError) {
+          console.error('Error fetching messages:', highwaveError || swellsurgeError || oceancurrentError);
+          return;
+        }
+
+        const highwaveMap = highwaveData.reduce((map, item) => {
+          map[item.district.toLowerCase()] = item.hw_message;
+          return map;
+        }, {});
+
+        const swellsurgeMap = swellsurgeData.reduce((map, item) => {
+          map[item.district.toLowerCase()] = item.ss_message;
+          return map;
+        }, {});
+
+        const oceancurrentMap = oceancurrentData.reduce((map, item) => {
+          map[item.district.toLowerCase()] = item.oc_message;
+          return map;
+        }, {});
+
+        const updatedBookmarks = await Promise.all(bookmarkData.map(async (bookmark) => {
+          const beach = beachData.find((b) => b.id === bookmark.beach_id);
+          const districtLower = beach.district.toLowerCase();
+
+          const hw_message = extractAdvice(highwaveMap[districtLower] || 'No alert');
+          const ss_message = extractAdvice(swellsurgeMap[districtLower] || 'No alert');
+          const oc_message = extractAdvice(oceancurrentMap[districtLower] || 'No alert');
+
+          await supabase
+            .from('bookmarks')
+            .update({ hw_message, ss_message, oc_message })
+            .eq('user_id', userId)
+            .eq('beach_id', bookmark.beach_id);
+
+          return {
+            ...bookmark,
+            ...beach,
+            hw_message,
+            ss_message,
+            oc_message,
+          };
         }));
 
-        setBookmarks(combinedData);
+        setBookmarks(updatedBookmarks);
       } else {
         setBookmarks([]);
       }
@@ -65,6 +118,23 @@ function BookMark() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Function to extract and grammatically correct the advice message starting from "it advised"
+  const extractAdvice = (message) => {
+    const lowercasedMessage = message.toLowerCase();
+    const adviceIndex = lowercasedMessage.indexOf('it advised');
+    
+    if (adviceIndex === -1) {
+      return message;
+    }
+
+    let extractedMessage = message.substring(adviceIndex);
+    
+    // Capitalize the first letter after "it advised"
+    extractedMessage = extractedMessage.charAt(0).toUpperCase() + extractedMessage.slice(1);
+    
+    return extractedMessage;
   };
 
   const handleRemoveBookmark = async (bookmarkId) => {
@@ -133,7 +203,13 @@ function BookMark() {
                     </button>
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
-                    Discover the beauty of {bookmark.beach_name} in {bookmark.state}. Perfect for summer getaways!
+                    High Wave Alert: {bookmark.hw_message}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Swell Surge Alert: {bookmark.ss_message}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Ocean Current Alert: {bookmark.oc_message}
                   </p>
                 </div>
               </li>
