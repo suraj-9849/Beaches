@@ -120,7 +120,6 @@ function BookMark() {
     }
   };
 
-  // Function to extract and grammatically correct the advice message starting from "it advised"
   const extractAdvice = (message) => {
     const lowercasedMessage = message.toLowerCase();
     const adviceIndex = lowercasedMessage.indexOf('it advised');
@@ -130,10 +129,7 @@ function BookMark() {
     }
 
     let extractedMessage = message.substring(adviceIndex);
-    
-    // Capitalize the first letter after "it advised"
     extractedMessage = extractedMessage.charAt(0).toUpperCase() + extractedMessage.slice(1);
-    
     return extractedMessage;
   };
 
@@ -163,10 +159,6 @@ function BookMark() {
     return imageData[randomIndex].url;
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-emerald-50 flex flex-col">
       <Navbar />
@@ -175,7 +167,11 @@ function BookMark() {
           <Bookmark className="mr-2" size={32} />
           Bookmarked Beaches
         </h1>
-        {bookmarks.length > 0 ? (
+        {loading ? (
+          <p>Loading your bookmarks...</p>
+        ) : bookmarks.length > 0 ? (
+         <>
+
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
             {bookmarks.map((bookmark) => (
               <li
@@ -215,6 +211,7 @@ function BookMark() {
               </li>
             ))}
           </ul>
+         </>
         ) : (
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
             <Bookmark className="mx-auto mb-4 text-gray-400" size={48} />
