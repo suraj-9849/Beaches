@@ -72,29 +72,49 @@ const BeachDivs = ({ filter }) => {
 
   const handleBookmarkClick = async (e, beach) => {
     e.stopPropagation();
-
+  
     if (!user) {
       alert("You need to be logged in to bookmark beaches.");
       return;
     }
-
+  
     try {
-    
-      const { data, error } = await supabase
-        .from('bookmarks') 
+      const { data: existingBookmarks, error: checkError } = await supabase
+        .from('bookmarks')
+        .select('*')
+        .eq('user_id', user.uid)
+        .eq('beach_id', beach.id);
+  
+      if (checkError) {
+        console.error('Error checking bookmarks:', checkError);
+        return;
+      }
+  
+      if (existingBookmarks.length > 0) {
+        alert("You have already bookmarked this beach.");
+        return;
+      }
+  
+      const { error } = await supabase
+        .from('bookmarks')
         .insert([
           {
-            user_id: user.uid, 
-            beach_id: beach.id, 
-            created_at: new Date().toISOString(), 
+            user_id: user.uid,
+            beach_id: beach.id,
+            created_at: new Date().toISOString(),
           },
         ]);
-
-      
+  
+      if (error) {
+        console.error('Error saving bookmark:', error);
+      } else {
+        alert("Bookmark saved successfully!");
+      }
     } catch (error) {
-    
+      console.error('Error in handleBookmarkClick:', error.message);
     }
   };
+  
 
   if (loading) {
     return <p>Loading...</p>;
