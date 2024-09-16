@@ -1,7 +1,7 @@
 import React, { useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 
-const PhotoCapture = ({ onPhotoCaptured }) => {
+const Capture = ({ onPhotoCaptured }) => {
   const webcamRef = useRef(null);
 
   const handlePhotoCapture = useCallback(() => {
@@ -9,7 +9,7 @@ const PhotoCapture = ({ onPhotoCaptured }) => {
     if (imageSrc) {
       onPhotoCaptured({
         name: `captured_image_${Date.now()}.jpg`,
-        file: imageSrc,
+        base64Image: imageSrc.split(',')[1], // Pass only the base64 portion
       });
     }
   }, [onPhotoCaptured]);
@@ -22,4 +22,4 @@ const PhotoCapture = ({ onPhotoCaptured }) => {
   );
 };
 
-export default PhotoCapture;
+export default Capture;

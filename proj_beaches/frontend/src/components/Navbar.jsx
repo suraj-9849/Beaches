@@ -60,7 +60,7 @@ function Navbar() {
             <Bell size={24} />
           </Link>
           {user ? (
-            <button onClick={handleLogout} className="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors">
+            <button className="text-white hidden hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white p-2 rounded-full transition-colors">
               <User size={24} />
             </button>
           ) : (
