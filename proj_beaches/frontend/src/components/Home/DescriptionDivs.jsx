@@ -33,8 +33,8 @@ function DescriptionDivs({ data }) {
   const Icon = content.icon;
 
   return (
-    <div className='flex items-center flex-col justify-center mt-10' >
-        <div className={`max-w-sm rounded-lg overflow-hidden shadow-lg bg-gradient-to-br ${content.bgColor} flex flex-col items-center justify-center `}>
+    <div className='mt-10 flex items-center justify-center ' >
+        <div className={`max-w-sm rounded-lg overflow-hidden shadow-lg bg-gradient-to-br ${content.bgColor} flex flex-col  items-center justify-center `}>
       <div className="px-6 py-4">
         <div className="flex items-center mb-4">
           <Icon className="h-10 w-10 text-white mr-3" />
