@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'tailwindcss/tailwind.css';
 
 const extractWaveData = (message) => {
-  
-    const highWaveMatch = message.match(/High waves?\s*in\s*the\s*range\s*of\s*([\d.]+)\s*-\s*([\d.]+)\s*m/i);
-    const highWave = highWaveMatch ? ((parseFloat(highWaveMatch[1]) + parseFloat(highWaveMatch[2])) / 2).toFixed(1) : 'N/A';
-  
-    const swellSurgeMatch = message.match(/Swell waves? in the range of \d+\.?\d* - \d+\.?\d* sec period with (\d+\.?\d*) - (\d+\.?\d*) m height/i);
-   
-    const swellSurge = swellSurgeMatch ? parseFloat(swellSurgeMatch[1]) : 'N/A';
-  
-    return { highWave, swellSurge };
-  };
-  
-  
-  
-  
+  const highWaveMatch = message.match(/High waves?\s*in\s*the\s*range\s*of\s*([\d.]+)\s*-\s*([\d.]+)\s*m/i);
+  const highWave = highWaveMatch ? ((parseFloat(highWaveMatch[1]) + parseFloat(highWaveMatch[2])) / 2).toFixed(1) : 'N/A';
+
+  const swellSurgeMatch = message.match(/Swell waves? in the range of \d+\.?\d* - \d+\.?\d* sec period with (\d+\.?\d*) - (\d+\.?\d*) m height/i);
+  const swellSurge = swellSurgeMatch ? parseFloat(swellSurgeMatch[1]) : 'N/A';
+
+  return { highWave, swellSurge };
+};
+
 const WaveAlerts = ({ district, onWaveDataUpdate }) => {
   const [highWaveAlerts, setHighWaveAlerts] = useState([]);
   const [swellSurgeAlerts, setSwellSurgeAlerts] = useState([]);
@@ -26,8 +21,6 @@ const WaveAlerts = ({ district, onWaveDataUpdate }) => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-      
-
         if (!district) {
           setError('District is not provided');
           return;
@@ -53,11 +46,22 @@ const WaveAlerts = ({ district, onWaveDataUpdate }) => {
     };
 
     fetchAlerts();
-  }, [district, onWaveDataUpdate]);
+  }, [district]);
+
+  const handleWaveDataUpdate = useCallback((alerts) => {
+    alerts.forEach(alert => {
+      const { highWave, swellSurge } = extractWaveData(alert.Message);
+      onWaveDataUpdate(highWave, swellSurge);
+    });
+  }, [onWaveDataUpdate]);
+
+  useEffect(() => {
+    handleWaveDataUpdate(highWaveAlerts);
+    handleWaveDataUpdate(swellSurgeAlerts);
+  }, [highWaveAlerts, swellSurgeAlerts, handleWaveDataUpdate]);
 
   return (
     <div className="p-6 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl border border-white border-opacity-20">
-      
       {error && <p className="text-red-500 text-center">{error}</p>}
 
       {highWaveAlerts.length === 0 && swellSurgeAlerts.length === 0 ? (
@@ -69,7 +73,6 @@ const WaveAlerts = ({ district, onWaveDataUpdate }) => {
               <h3 className="text-2xl font-semibold mb-4">High Wave Alerts</h3>
               {highWaveAlerts.map(alert => {
                 const { highWave, swellSurge } = extractWaveData(alert.Message);
-                onWaveDataUpdate(highWave, swellSurge);
 
                 return (
                   <div key={alert.OBJECTID} className="bg-white p-4 rounded-lg shadow-md">
@@ -93,7 +96,6 @@ const WaveAlerts = ({ district, onWaveDataUpdate }) => {
               <h3 className="text-2xl font-semibold mb-4">Swell Surge Alerts</h3>
               {swellSurgeAlerts.map(alert => {
                 const { highWave, swellSurge } = extractWaveData(alert.Message);
-                onWaveDataUpdate(highWave, swellSurge);
                 return (
                   <div key={alert.OBJECTID} className="bg-white p-4 rounded-lg shadow-md">
                     <div className="flex items-center mb-4">

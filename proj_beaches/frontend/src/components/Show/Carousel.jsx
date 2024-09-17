@@ -107,80 +107,100 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
     try {
       setIsUploading(true);
   
-      const base64Image = newImage.base64Image || await convertFileToBase64(newImage); 
-      try {
-        const visionResponse = await fetch(`https://beaches-backend.vercel.app/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            base64Image: base64Image,
-          }),
+      const base64Image = newImage.base64Image || await convertFileToBase64(newImage);
+      if (!base64Image) {
+        throw new Error('Base64 image is invalid');
+      }
+  
+      const imageWithPrefix = base64Image.startsWith('data:image/') 
+        ? base64Image 
+        : `data:image/jpeg;base64,${base64Image}`;
+  
+      console.log('Base64 Image with Prefix:', imageWithPrefix);
+  
+      const visionResponse = await fetch(`https://testing1-ebon.vercel.app/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          base64Image: base64Image,
+        }),
+      });
+  
+      const visionResult = await visionResponse.json();
+  
+      if (!visionResult.isBeachRelated) {
+        setErrorMessage("The image is not relevant to beach-related content.");
+        setIsUploading(false);
+        return;
+      }
+  
+      const sanitizedFileName = newImage.name
+        .replace(/\s+/g, '-')
+        .replace(/[^a-zA-Z0-9.-]/g, '');
+  
+      const encodedFileName = encodeURIComponent(sanitizedFileName);
+  
+      const { data, error } = await supabase.storage
+        .from('beach-images')
+        .upload(`photos/${encodedFileName}`, dataURLtoFile(imageWithPrefix, sanitizedFileName), {
+          cacheControl: '3600',
+          upsert: false,
         });
   
-        const visionResult = await visionResponse.json();
+      if (error) throw error;
   
-        if (!visionResult.isBeachRelated) {
-          setErrorMessage("The image is not relevant to beach-related content.");
-          setIsUploading(false);
-          return;
-        }
+      const { data: { publicUrl }, error: urlError } = supabase
+        .storage
+        .from('beach-images')
+        .getPublicUrl(`photos/${encodedFileName}`);
   
-        const sanitizedFileName = newImage.name
-          .replace(/\s+/g, '-')
-          .replace(/[^a-zA-Z0-9.-]/g, '');
+      if (urlError) throw urlError;
   
-        const encodedFileName = encodeURIComponent(sanitizedFileName);
+      const { error: insertError } = await supabase
+        .from('photos')
+        .insert([{ image_url: publicUrl, beach_id: beachId, user_id: user.uid }]);
   
-        const { data, error } = await supabase.storage
-          .from('beach-images')
-          .upload(`photos/${encodedFileName}`, dataURLtoFile(base64Image, sanitizedFileName), {
-            cacheControl: '3600',
-            upsert: false,
-          });
+      if (insertError) throw insertError;
   
-        if (error) throw error;
-  
-        const { data: { publicUrl }, error: urlError } = supabase
-          .storage
-          .from('beach-images')
-          .getPublicUrl(`photos/${encodedFileName}`);
-  
-        if (urlError) throw urlError;
-  
-        const { error: insertError } = await supabase
-          .from('photos')
-          .insert([{ image_url: publicUrl, beach_id: beachId, user_id: user.uid }]);
-  
-        if (insertError) throw insertError;
-  
-        fetchImages();
-        setPhotoModalIsOpen(false);
-        setNewImage(null);
-      } catch (err) {
-        console.error("Error analyzing or uploading photo:", err.message);
-        setErrorMessage("An error occurred while processing the image.");
-        setIsUploading(false);
-      }
+      fetchImages();
+      setPhotoModalIsOpen(false);
+      setNewImage(null);
     } catch (err) {
-      console.error("Error processing image:", err.message);
-      setErrorMessage("An error occurred while uploading the image.");
+      console.error("Error processing or uploading photo:", err.message);
+      setErrorMessage("An error occurred while processing the image.");
       setIsUploading(false);
     }
   };
+  
+  
   
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onload = () => {
+        const result = reader.result;
+        console.log('Base64 Image:', result); 
+        if (result) {
+          resolve(result.split(',')[1]);
+        } else {
+          reject(new Error('Failed to read file as base64'));
+        }
+      };
       reader.onerror = (error) => reject(error);
     });
   };
+  
 
   const dataURLtoFile = (dataurl, filename) => {
+    console.log('Data URL:', dataurl); 
     const arr = dataurl.split(',');
+    if (arr.length !== 2) {
+      console.error('Invalid data URL format');
+      throw new Error('Invalid data URL format');
+    }
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
@@ -190,6 +210,7 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
     }
     return new File([u8arr], filename, { type: mime });
   };
+  
   
 
   const navigateToLogin = () => {
@@ -338,11 +359,11 @@ const CarouselWithDetails = ({ name, beachLocation, beachId }) => {
           onChange={handlePhotoChange}
           className="mb-4"
         />
-        <Capture
+        {/* <Capture
           onPhotoCaptured={(photo) => {
             setNewImage(photo); 
           }}
-        />
+        /> */}
         <div className="flex justify-end mt-4">
           <button
             className="px-4 py-2 bg-green-500 text-white rounded-lg"

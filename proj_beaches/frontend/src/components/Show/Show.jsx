@@ -58,7 +58,7 @@ const Show = () => {
           </section>
             <GraphComponent forecastData={forecastData} /> {/* Use the new Graph component */}
             <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-md mb-8">
-              <h4 className="text-md font-semibold mb-4"><Descript data={JSON.stringify(weatherData)} /></h4>
+              <div className="text-md font-semibold mb-4"><Descript data={JSON.stringify(weatherData)} /></div>
             </div>
           </div>
           {/* Alerts Section */}

@@ -13,6 +13,7 @@ const extractCurrentSpeed = (message) => {
   console.warn("Current speed regex did not match:", message);
   return "N/A";
 };
+
 const Alerts = ({ district, currentSpeed, setCurrentSpeed }) => {
   const [alerts, setAlerts] = useState([]);
   const [error, setError] = useState(null);
@@ -20,8 +21,6 @@ const Alerts = ({ district, currentSpeed, setCurrentSpeed }) => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        
-
         if (!district) {
           setError("District is not provided");
           return;
@@ -54,6 +53,14 @@ const Alerts = ({ district, currentSpeed, setCurrentSpeed }) => {
     fetchAlerts();
   }, [district]);
 
+  useEffect(() => {
+    if (alerts.length > 0) {
+      const firstAlert = alerts[0];
+      const speed = extractCurrentSpeed(firstAlert.Message);
+      setCurrentSpeed(speed);
+    }
+  }, [alerts, setCurrentSpeed]);
+
   return (
     <div className="p-6 max-w-4xl mx-auto text-black rounded-3xl shadow-2xl border border-white border-opacity-20">
       {error && <p className="text-red-500 text-center">{error}</p>}
@@ -62,31 +69,27 @@ const Alerts = ({ district, currentSpeed, setCurrentSpeed }) => {
       ) : (
         <div className="space-y-6">
           <h3 className="text-2xl font-semibold mb-4">Ocean Current Alerts</h3>
-          {alerts.map((alert) => {
-            setCurrentSpeed(extractCurrentSpeed(alert.Message));
-
-            return (
-              <div
-                key={alert.OBJECTID}
-                className="bg-white p-4 rounded-lg shadow-md"
-              >
-                <div className="flex items-center mb-4">
-                  <div
-                    className={`w-6 h-6 rounded-full`}
-                    style={{ backgroundColor: alert.Color }}
-                  ></div>
-                  <div className="ml-4">
-                    <strong className="text-lg">{alert.Alert}</strong>
-                    <p className="text-sm">Issue Date: {alert["Issue Date"]}</p>
-                  </div>
+          {alerts.map((alert) => (
+            <div
+              key={alert.OBJECTID}
+              className="bg-white p-4 rounded-lg shadow-md"
+            >
+              <div className="flex items-center mb-4">
+                <div
+                  className={`w-6 h-6 rounded-full`}
+                  style={{ backgroundColor: alert.Color }}
+                ></div>
+                <div className="ml-4">
+                  <strong className="text-lg">{alert.Alert}</strong>
+                  <p className="text-sm">Issue Date: {alert["Issue Date"]}</p>
                 </div>
-                <p className="text-md font-bold mt-2">
-                  Ocean Current Speed: {currentSpeed} m/s
-                </p>
-                <p className="text-sm mt-2">{alert.Message}</p>
               </div>
-            );
-          })}
+              <p className="text-md font-bold mt-2">
+                Ocean Current Speed: {currentSpeed} m/s
+              </p>
+              <p className="text-sm mt-2">{alert.Message}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
