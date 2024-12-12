@@ -1,0 +1,105 @@
+{
+  "Andaman and Nicobar Islands": {
+    "Radhanagar Beach": { "latitude": 11.9836, "longitude": 92.9876 },
+    "Elephant Beach": { "latitude": 12.0086, "longitude": 93.0016 },
+    "Corbyn’s Cove Beach": { "latitude": 11.637, "longitude": 92.7592 },
+    "Laxmanpur Beach": { "latitude": 11.5777, "longitude": 92.7166 },
+    "Vijaynagar Beach": { "latitude": 12.0045, "longitude": 92.9848 }
+  },
+  "Goa": {
+    "Calangute Beach": { "latitude": 15.5439, "longitude": 73.7553 },
+    "Baga Beach": { "latitude": 15.5529, "longitude": 73.7516 },
+    "Anjuna Beach": { "latitude": 15.5811, "longitude": 73.7437 },
+    "Palolem Beach": { "latitude": 15.0091, "longitude": 74.023 },
+    "Candolim Beach": { "latitude": 15.5136, "longitude": 73.7686 },
+    "Miramar Beach": { "latitude": 15.4746, "longitude": 73.8057 },
+    "Colva Beach": { "latitude": 15.2798, "longitude": 73.922 },
+    "Agonda Beach": { "latitude": 15.0346, "longitude": 74.021 },
+    "Vagator Beach": { "latitude": 15.5985, "longitude": 73.7446 }
+  },
+  "Kerala": {
+    "Varkala Beach": { "latitude": 8.7379, "longitude": 76.7111 },
+    "Kovalam Beach": { "latitude": 8.4006, "longitude": 76.978 },
+    "Marari Beach": { "latitude": 9.5999, "longitude": 76.2975 },
+    "Alleppey Beach": { "latitude": 9.4981, "longitude": 76.3302 },
+    "Bekal Beach": { "latitude": 12.386, "longitude": 75.029 },
+    "Cherai Beach": { "latitude": 10.1455, "longitude": 76.18 },
+    "Meenkunnu Beach": { "latitude": 11.8004, "longitude": 75.3582 },
+    "Kappad Beach": { "latitude": 11.4183, "longitude": 75.7191 },
+    "Muzhappilangad Beach": { "latitude": 11.7895, "longitude": 75.4573 }
+  },
+  "Maharashtra": {
+    "Juhu Beach": { "latitude": 19.1, "longitude": 72.8267 },
+    "Girgaum Chowpatty Beach": { "latitude": 18.9535, "longitude": 72.8125 },
+    "Alibaug Beach": { "latitude": 18.6412, "longitude": 72.8722 },
+    "Ganpatipule Beach": { "latitude": 17.147, "longitude": 73.2616 },
+    "Aksa Beach": { "latitude": 19.1677, "longitude": 72.7805 },
+    "Versova Beach": { "latitude": 19.128, "longitude": 72.7997 },
+    "Dahanu Beach": { "latitude": 19.9928, "longitude": 72.712 },
+    "Harihareshwar Beach": { "latitude": 18.0827, "longitude": 73.0172 },
+    "Tarkarli Beach": { "latitude": 16.0411, "longitude": 73.4713 },
+    "Kashid Beach": { "latitude": 18.4184, "longitude": 72.9079 }
+  },
+  "Odisha": {
+    "Puri Beach": { "latitude": 19.7985, "longitude": 85.8245 },
+    "Chandipur Beach": { "latitude": 21.475, "longitude": 87.0285 },
+    "Gopalpur Beach": { "latitude": 19.2633, "longitude": 84.927 },
+    "Ramachandi Beach": { "latitude": 19.8254, "longitude": 86.0037 },
+    "Paradeep Beach": { "latitude": 20.3072, "longitude": 86.6611 },
+    "Balighai Beach": { "latitude": 19.8727, "longitude": 85.8715 },
+    "Talasari Beach": { "latitude": 21.559, "longitude": 87.4487 },
+    "Chandrabhaga Beach": { "latitude": 19.8851, "longitude": 86.0946 },
+    "Astaranga Beach": { "latitude": 19.9895, "longitude": 86.2257 }
+  },
+  "Tamil Nadu": {
+    "Marina Beach": { "latitude": 13.0535, "longitude": 80.2824 },
+    "Mahabalipuram Beach": { "latitude": 12.62, "longitude": 80.1922 },
+    "Rameswaram Beach": { "latitude": 9.2876, "longitude": 79.3129 },
+    "Kanyakumari Beach": { "latitude": 8.0786, "longitude": 77.5539 },
+    "Elliot's Beach": { "latitude": 12.9975, "longitude": 80.2716 },
+    "Covelong Beach": { "latitude": 12.7903, "longitude": 80.2521 },
+    "Thiruvanmiyur Beach": { "latitude": 12.979, "longitude": 80.2684 },
+    "Silver Beach": { "latitude": 11.6816, "longitude": 79.7714 },
+    "Auroville Beach": { "latitude": 12.0081, "longitude": 79.8549 },
+    "Dhanushkodi Beach": { "latitude": 9.2337, "longitude": 79.4211 }
+  },
+  "West Bengal": {
+    "Digha Beach": { "latitude": 21.6278, "longitude": 87.5092 },
+    "Mandarmani Beach": { "latitude": 21.6719, "longitude": 87.7326 },
+    "Tajpur Beach": { "latitude": 21.669, "longitude": 87.6783 },
+    "Bakkhali Beach": { "latitude": 21.5617, "longitude": 88.2644 },
+    "Shankarpur Beach": { "latitude": 21.6462, "longitude": 87.5633 },
+    "Frazerganj Beach": { "latitude": 21.5654, "longitude": 88.2792 }
+  },
+  "Andhra Pradesh": {
+    "Rishikonda Beach": { "latitude": 17.7593, "longitude": 83.3832 },
+    "Bheemili Beach": { "latitude": 17.8916, "longitude": 83.4544 },
+    "Mypadu Beach": { "latitude": 14.4393, "longitude": 80.1315 },
+    "Suryalanka Beach": { "latitude": 15.9994, "longitude": 80.5427 },
+    "Yarada Beach": { "latitude": 17.6773, "longitude": 83.2807 },
+    "Rushikonda Beach": { "latitude": 17.746, "longitude": 83.377 },
+    "Manginapudi Beach": { "latitude": 16.1751, "longitude": 81.1371 }
+  },
+  "Karnataka": {
+    "Gokarna Beach": { "latitude": 14.5476, "longitude": 74.3185 },
+    "Om Beach": { "latitude": 14.5173, "longitude": 74.3077 },
+    "Kudle Beach": { "latitude": 14.5282, "longitude": 74.3073 },
+    "Murudeshwar Beach": { "latitude": 14.0944, "longitude": 74.4892 },
+    "Malpe Beach": { "latitude": 13.3546, "longitude": 74.703 },
+    "Karwar Beach": { "latitude": 14.8149, "longitude": 74.126 },
+    "Kaup Beach": { "latitude": 13.2442, "longitude": 74.7392 },
+    "Panambur Beach": { "latitude": 12.9531, "longitude": 74.7905 },
+    "Someshwara Beach": { "latitude": 12.8257, "longitude": 74.8544 }
+  },
+  "Gujarat": {
+    "Chorwad Beach": { "latitude": 21.0155, "longitude": 70.2216 },
+    "Mandvi Beach": { "latitude": 22.8331, "longitude": 69.3504 },
+    "Diu Beach": { "latitude": 20.714, "longitude": 70.9824 },
+    "Tithal Beach": { "latitude": 20.6158, "longitude": 72.9065 },
+    "Ahmedpur Mandvi Beach": { "latitude": 20.9246, "longitude": 71.0159 },
+    "Somnath Beach": { "latitude": 20.8906, "longitude": 70.4016 },
+    "Porbandar Beach": { "latitude": 21.6417, "longitude": 69.6093 },
+    "Ghoghla Beach": { "latitude": 20.7074, "longitude": 70.9523 },
+    "Nagoa Beach": { "latitude": 20.7098, "longitude": 70.9157 }
+  }
+}
